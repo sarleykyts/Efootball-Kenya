@@ -1177,6 +1177,35 @@
             }
         }
 
+        function removePlayerFromTournament(regId) {
+    if (!confirm("Are you sure you want to remove this player from the tournament?")) {
+        return;
+    }
+
+    // Find the registration
+    const regIndex = db.registrations.findIndex(r => r.id === regId);
+    if (regIndex === -1) return;
+
+    const registration = db.registrations[regIndex];
+
+    // Decrease the registered count in the tournament
+    const tournament = db.tournaments.find(t => t.id === registration.tournament_id);
+    if (tournament && tournament.registered_count > 0) {
+        tournament.registered_count--;
+    }
+
+    // Remove the registration
+    db.registrations.splice(regIndex, 1);
+
+    saveToLocalStorage();
+
+    // Refresh admin view
+    renderAdminRegistrations();
+    renderTournaments();
+
+    showToast("Player removed from tournament.", "warning");
+        }
+        
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
