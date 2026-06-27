@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111114">> 
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="eFootball Kenya - Premier eFootball Tournaments Platform. Compete in knockout, league & more. M-Pesa payments, live scores, leaderboards.">
+    <meta name="theme-color" content="#111114">
+    <link rel="manifest" href="manifest.json">
+    <title>eFootball Kenya • Tournaments</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="eFootball Kenya - Premier eFootball Tournaments Platform. Compete in knockout, league &amp; more. M-Pesa payments, live scores, leaderboards.">
@@ -2342,9 +2347,15 @@
                         <div class="text-xs mt-1 text-lime-400">${tourney ? tourney.name : 'Unknown Tournament'}</div>
                     </div>
                     <div class="flex gap-x-2">
-                        <button onclick="approveRegistration(${reg.id})" class="px-6 py-2 text-xs font-semibold rounded-2xl bg-lime-400 text-zinc-950 active:scale-[0.985]">APPROVE</button>
-                        <button onclick="rejectRegistration(${reg.id})" class="px-5 py-2 text-xs font-semibold rounded-2xl border border-white/30">Reject</button>
-                    </div>
+    <button onclick="approveRegistration(${reg.id})" 
+            class="px-5 py-2 text-xs font-semibold rounded-2xl bg-lime-400 text-zinc-950">
+        Approve
+    </button>
+    <button onclick="removePlayerFromTournament(${reg.id})" 
+            class="px-4 py-2 text-xs font-semibold rounded-2xl border border-red-400/40 text-red-400">
+        Remove
+    </button>
+</div>
                 `;
                 container.appendChild(div);
             });
@@ -2381,6 +2392,29 @@
             showToast("Registration rejected.", "warning");
         }
 
+        function removePlayerFromTournament(regId) {
+    if (!confirm("Remove this player from the tournament?")) return;
+
+    const regIndex = db.registrations.findIndex(r => r.id === regId);
+    if (regIndex === -1) return;
+
+    const registration = db.registrations[regIndex];
+
+    // Reduce player count in tournament
+    const tournament = db.tournaments.find(t => t.id === registration.tournament_id);
+    if (tournament && tournament.registered_count > 0) {
+        tournament.registered_count--;
+    }
+
+    // Remove registration
+    db.registrations.splice(regIndex, 1);
+    saveToLocalStorage();
+
+    renderAdminRegistrations();
+    renderTournaments();
+    showToast("Player removed from tournament.", "warning");
+        }
+        
         function renderAdminFixtures() {
             const container = document.getElementById('admin-fixtures-list');
             container.innerHTML = `<div class="text-xs text-white/40 mb-3">Showing upcoming & live matches. Use "Update Score" to record results.</div>`;
@@ -2773,27 +2807,23 @@ showToast("Tournament created successfully! It is now live for registration.", "
         }
 
         // ==================== INITIALIZATION ====================
-function initializeApp() {
+        function initializeApp() {
     initTailwind();
     loadFromLocalStorage();
     
     // Render all main sections
     renderFeaturedPlayers();
     renderTournaments();
-    populateFixtureTournamentSelect();        // ← ADD THIS LINE
+    populateFixtureTournamentSelect();     // ← This fixes the dropdown
     renderLeaderboard();
     renderPlayers();
     renderGallery();
     startCountdown();
     highlightActiveNav();
     
-    // Update user interface
     updateUserUI();
-    
-    // Initialize PWA
     initPWA();
-    
-    // Demo welcome message
+
     if (!localStorage.getItem('efkenya_welcomed')) {
         setTimeout(() => {
             showToast("Welcome to eFootball Kenya! All data is saved in your browser.", "info");
@@ -2802,8 +2832,8 @@ function initializeApp() {
     }
     
     console.log('%c[eFKenya] App initialized successfully', 'color:#64748b');
-}
-            
+        }
+        
             // Keyboard shortcuts hint
             document.addEventListener('keydown', function(e) {
                 if (e.key === "/" && document.activeElement.tagName === "BODY") {
@@ -2825,13 +2855,20 @@ function initializeApp() {
         // Boot the app
         window.onload = initializeApp;
         
-        // Register Service Worker
+// ==================== FINAL PRODUCTION CODE ====================
+
+// Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
       .then(() => console.log('Service Worker registered'));
   });
 }
-    </script>
-</body>
-</html>
+
+// Auto-check achievements
+if (db.currentUser) {
+  const player = db.players.find(p => p.id === db.currentUser.id);
+  if (player) checkAndAwardAchievements(player);
+}
+
+console.log('%c[eFootball Kenya] Final production version ready', 'color:#22f3ff');
