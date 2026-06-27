@@ -2588,14 +2588,15 @@
                 description: form.description.value,
                 created_at: new Date().toISOString().split('T')[0]
             };
-            
             db.tournaments.unshift(newTourney);
-            saveToLocalStorage();
-            
-            document.getElementById('create-tourney-modal').remove();
-            
-            renderTournaments();
-            showToast("Tournament created successfully! It is now live for registration.", "success");
+saveToLocalStorage();
+
+document.getElementById('create-tourney-modal').remove();
+
+renderTournaments();                    // Refresh main tournament list first
+populateFixtureTournamentSelect();      // Then refresh the fixture dropdown
+
+showToast("Tournament created successfully! It is now live for registration.", "success");
             
             // Notify all players about the new tournament
             notifyNewTournament(newTourney.name);
@@ -2772,33 +2773,36 @@
         }
 
         // ==================== INITIALIZATION ====================
-        function initializeApp() {
-            initTailwind();
-            loadFromLocalStorage();
-            
-            // Render all sections
-            renderFeaturedPlayers();
-            renderTournaments();
-            populateFixtureTournamentSelect();
-            renderLeaderboard();
-            renderPlayers();
-            renderGallery();
-            startCountdown();
-            highlightActiveNav();
-            
-            // Update user UI
-            updateUserUI();
-            
-            // PWA
-            initPWA();
-            
-            // Demo: Show a welcome toast on first visit
-            if (!localStorage.getItem('efkenya_welcomed')) {
-                setTimeout(() => {
-                    showToast("Welcome to eFootball Kenya! All data is saved locally in your browser.", "info");
-                    localStorage.setItem('efkenya_welcomed', 'true');
-                }, 5200);
-            }
+function initializeApp() {
+    initTailwind();
+    loadFromLocalStorage();
+    
+    // Render all main sections
+    renderFeaturedPlayers();
+    renderTournaments();
+    populateFixtureTournamentSelect();        // ← ADD THIS LINE
+    renderLeaderboard();
+    renderPlayers();
+    renderGallery();
+    startCountdown();
+    highlightActiveNav();
+    
+    // Update user interface
+    updateUserUI();
+    
+    // Initialize PWA
+    initPWA();
+    
+    // Demo welcome message
+    if (!localStorage.getItem('efkenya_welcomed')) {
+        setTimeout(() => {
+            showToast("Welcome to eFootball Kenya! All data is saved in your browser.", "info");
+            localStorage.setItem('efkenya_welcomed', 'true');
+        }, 4500);
+    }
+    
+    console.log('%c[eFKenya] App initialized successfully', 'color:#64748b');
+}
             
             // Keyboard shortcuts hint
             document.addEventListener('keydown', function(e) {
