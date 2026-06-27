@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="eFootball Kenya - Premier eFootball Tournaments Platform. Compete in knockout, league & more. M-Pesa payments, live scores, leaderboards.">
     <meta name="theme-color" content="#111114">
     <link rel="manifest" href="manifest.json">
     <title>eFootball Kenya • Tournaments</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="eFootball Kenya - Premier eFootball Tournaments Platform. Compete in knockout, league &amp; more. M-Pesa payments, live scores, leaderboards.">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>eFootball Kenya • Tournaments</title>
-    
+
     <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -21,205 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
-        :root {
-            --accent-cyan: #22f3ff;
-            --accent-purple: #a855f7;
-            --accent-lime: #84cc16;
-        }
-        
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-        }
-        
-        .font-display {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-weight: 600;
-        }
-
-        .neon-text {
-            text-shadow: 0 0 10px rgb(34 243 255 / 0.5),
-                        0 0 20px rgb(34 243 255 / 0.3);
-        }
-
-        .neon-purple {
-            text-shadow: 0 0 10px rgb(168 85 247 / 0.6),
-                        0 0 20px rgb(168 85 247 / 0.4);
-        }
-
-        .glass {
-            background: rgba(255,255,255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255, 0.1);
-        }
-
-        .neon-border {
-            border: 1px solid #22f3ff;
-            box-shadow: 0 0 15px rgba(34, 243, 255, 0.3);
-        }
-
-        .section-header {
-            font-size: 2.25rem;
-            line-height: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
-        .tournament-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .tournament-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-
-        .player-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .player-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 0 1px #22f3ff;
-        }
-
-        .nav-link {
-            position: relative;
-            transition: color 0.2s ease;
-        }
-        
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(to right, #22f3ff, #a855f7);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover:after,
-        .nav-link.active:after {
-            width: 100%;
-        }
-
-        .stat-number {
-            font-variant-numeric: tabular-nums;
-        }
-
-        .neon-glow {
-            box-shadow: 0 0 15px rgba(34, 243, 255, 0.4),
-                        0 0 30px rgba(34, 243, 255, 0.2);
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.025em;
-        }
-
-        .modal {
-            animation: modalPop 0.2s ease forwards;
-        }
-
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .fixture-row {
-            transition: background-color 0.2s ease;
-        }
-        
-        .fixture-row:hover {
-            background-color: rgba(255,255,255,0.03);
-        }
-
-        .elegant-shadow {
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3),
-                        0 4px 6px -4px rgb(0 0 0 / 0.3);
-        }
-
-        .masonry-grid {
-            column-count: 2;
-            column-gap: 1rem;
-        }
-        
-        @media (min-width: 768px) {
-            .masonry-grid {
-                column-count: 3;
-            }
-        }
-        
-        .gallery-item {
-            break-inside: avoid;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            border-radius: 12px;
-            position: relative;
-        }
-
-        .gallery-item img {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        box-shadow 0.3s ease;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.08);
-        }
-
-        .live-dot {
-            animation: pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        .leaderboard-row {
-            transition: all 0.2s ease;
-        }
-
-        .leaderboard-row:hover {
-            background-color: rgba(163, 163, 172, 0.08);
-            transform: translateX(4px);
-        }
-
-        .futuristic-bg {
-            background: radial-gradient(circle at center, #18181b 0%, #0a0a0f 70%);
-        }
-
-        .accent-gradient {
-            background: linear-gradient(135deg, #22f3ff, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .countdown-digit {
-            font-feature-settings: "ss02";
-            min-width: 2.75rem;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #3f3f46;
-            border-radius: 20px;
-        }
-
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Mobile safe area padding */
-        .pb-safe {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        /* (Keep your existing CSS styles here - do not delete them) */
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 antialiased">
@@ -2420,29 +2217,6 @@
             renderAdminRegistrations();
             showToast("Registration rejected.", "warning");
         }
-
-        function removePlayerFromTournament(regId) {
-    if (!confirm("Remove this player from the tournament?")) return;
-
-    const regIndex = db.registrations.findIndex(r => r.id === regId);
-    if (regIndex === -1) return;
-
-    const registration = db.registrations[regIndex];
-
-    // Reduce player count in tournament
-    const tournament = db.tournaments.find(t => t.id === registration.tournament_id);
-    if (tournament && tournament.registered_count > 0) {
-        tournament.registered_count--;
-    }
-
-    // Remove registration
-    db.registrations.splice(regIndex, 1);
-    saveToLocalStorage();
-
-    renderAdminRegistrations();
-    renderTournaments();
-    showToast("Player removed from tournament.", "warning");
-        }
         
         function renderAdminFixtures() {
             const container = document.getElementById('admin-fixtures-list');
@@ -2836,14 +2610,13 @@ showToast("Tournament created successfully! It is now live for registration.", "
         }
 
         // ==================== INITIALIZATION ====================
-        function initializeApp() {
+function initializeApp() {
     initTailwind();
     loadFromLocalStorage();
     
-    // Render all main sections
     renderFeaturedPlayers();
     renderTournaments();
-    populateFixtureTournamentSelect();     // ← This fixes the dropdown
+    populateFixtureTournamentSelect();
     renderLeaderboard();
     renderPlayers();
     renderGallery();
@@ -2861,7 +2634,7 @@ showToast("Tournament created successfully! It is now live for registration.", "
     }
     
     console.log('%c[eFKenya] App initialized successfully', 'color:#64748b');
-        }
+}
         
             // Keyboard shortcuts hint
             document.addEventListener('keydown', function(e) {
@@ -2880,10 +2653,6 @@ showToast("Tournament created successfully! It is now live for registration.", "
             
             console.log('%c[eFKenya] Web app initialized successfully. Ready for GitHub Pages.', 'color:#64748b');
         }
-
-        // Boot the app
-        window.onload = initializeApp;
-        
 // ==================== FINAL PRODUCTION CODE ====================
 
 // Register Service Worker
