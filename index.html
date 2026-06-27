@@ -1,0 +1,2833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111114">> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="eFootball Kenya - Premier eFootball Tournaments Platform. Compete in knockout, league &amp; more. M-Pesa payments, live scores, leaderboards.">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>eFootball Kenya • Tournaments</title>
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --accent-cyan: #22f3ff;
+            --accent-purple: #a855f7;
+            --accent-lime: #84cc16;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgb(34 243 255 / 0.5),
+                        0 0 20px rgb(34 243 255 / 0.3);
+        }
+
+        .neon-purple {
+            text-shadow: 0 0 10px rgb(168 85 247 / 0.6),
+                        0 0 20px rgb(168 85 247 / 0.4);
+        }
+
+        .glass {
+            background: rgba(255,255,255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255, 0.1);
+        }
+
+        .neon-border {
+            border: 1px solid #22f3ff;
+            box-shadow: 0 0 15px rgba(34, 243, 255, 0.3);
+        }
+
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .tournament-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .tournament-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .player-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .player-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 0 1px #22f3ff;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(to right, #22f3ff, #a855f7);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%;
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(34, 243, 255, 0.4),
+                        0 0 30px rgba(34, 243, 255, 0.2);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        .modal {
+            animation: modalPop 0.2s ease forwards;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .fixture-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .fixture-row:hover {
+            background-color: rgba(255,255,255,0.03);
+        }
+
+        .elegant-shadow {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3),
+                        0 4px 6px -4px rgb(0 0 0 / 0.3);
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .gallery-item img {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .live-dot {
+            animation: pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .leaderboard-row {
+            transition: all 0.2s ease;
+        }
+
+        .leaderboard-row:hover {
+            background-color: rgba(163, 163, 172, 0.08);
+            transform: translateX(4px);
+        }
+
+        .futuristic-bg {
+            background: radial-gradient(circle at center, #18181b 0%, #0a0a0f 70%);
+        }
+
+        .accent-gradient {
+            background: linear-gradient(135deg, #22f3ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .countdown-digit {
+            font-feature-settings: "ss02";
+            min-width: 2.75rem;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #3f3f46;
+            border-radius: 20px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Mobile safe area padding */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 antialiased">
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/95 backdrop-blur-xl">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 via-purple-500 to-lime-400 flex items-center justify-center shadow-lg neon-glow">
+                        <i class="fa-solid fa-tachometer-alt text-zinc-950 text-3xl font-black"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-extrabold tracking-tighter">eF</span>
+                        <span class="font-display text-3xl font-extrabold tracking-tighter bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Kenya</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a href="#home" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white active" data-section="home">Home</a>
+                    <a href="#tournaments" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white" data-section="tournaments">Tournaments</a>
+                    <a href="#fixtures" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white" data-section="fixtures">Fixtures</a>
+                    <a href="#leaderboard" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white" data-section="leaderboard">Leaderboard</a>
+                    <a href="#players" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white" data-section="players">Players</a>
+                    <a href="#gallery" class="nav-link px-3 py-1.5 text-zinc-300 hover:text-white" data-section="gallery">Gallery</a>
+                </div>
+
+                <!-- Right side actions -->
+                <div class="flex items-center gap-x-3">
+                    <!-- User area -->
+                    <div id="user-area" class="hidden items-center gap-x-2">
+                        <div onclick="showUserProfile()" class="flex items-center gap-x-2 cursor-pointer hover:bg-white/5 px-2 py-1.5 rounded-2xl transition-colors">
+                            <img id="nav-avatar" src="https://picsum.photos/id/1005/32/32" class="w-8 h-8 rounded-full ring-1 ring-white/20 object-cover" alt="Avatar">
+                            <div class="hidden lg:block">
+                                <div id="nav-username" class="text-sm font-semibold"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin button -->
+                    <button onclick="openAdminDashboard()" 
+                            class="hidden md:flex items-center gap-x-2 px-4 py-2 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-all active:scale-[0.985]">
+                        <i class="fa-solid fa-shield-halved mr-1.5"></i>
+                        <span>Admin</span>
+                    </button>
+
+                    <!-- Login / Logout -->
+                    <button id="login-btn" onclick="showLoginModal()"
+                            class="px-5 py-2 text-sm font-semibold rounded-2xl bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.985] transition-all flex items-center gap-x-2">
+                        <i class="fa-solid fa-sign-in-alt"></i>
+                        <span class="hidden sm:inline">Login</span>
+                    </button>
+                    
+                    <button id="logout-btn" onclick="logoutUser()" 
+                            class="hidden px-4 py-2 text-sm font-semibold rounded-2xl border border-white/30 hover:bg-white/5 transition-all">
+                        Logout
+                    </button>
+
+                    <!-- Mobile menu -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden w-11 h-11 flex items-center justify-center text-xl active:bg-white/10 rounded-2xl">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-[60] bg-zinc-950/95 pt-20 px-6">
+        <div class="flex flex-col gap-y-1 text-lg">
+            <a href="#home" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Home</a>
+            <a href="#tournaments" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Tournaments</a>
+            <a href="#fixtures" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Fixtures</a>
+            <a href="#leaderboard" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Leaderboard</a>
+            <a href="#players" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Players</a>
+            <a href="#gallery" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-2xl hover:bg-white/5">Gallery</a>
+            <div class="h-px bg-white/10 my-2"></div>
+            <button onclick="openAdminDashboard(); toggleMobileMenu()" class="flex items-center gap-x-3 py-3 px-4 rounded-2xl hover:bg-white/5 text-left">
+                <i class="fa-solid fa-shield-halved w-5"></i> Admin Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- HERO / HOME -->
+    <header id="home" class="relative min-h-[100dvh] flex items-center justify-center pt-16 overflow-hidden">
+        <!-- Background effects -->
+        <div class="absolute inset-0 futuristic-bg"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(#27272a_0.8px,transparent_1px)] bg-[length:5px_5px] opacity-40"></div>
+        
+        <!-- Hero content -->
+        <div class="relative max-w-screen-2xl mx-auto px-6 text-center z-10">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl border border-white/10 bg-white/5 mb-6">
+                <div class="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold tracking-[2px] text-lime-400">SEASON 3 • 2026</span>
+            </div>
+            
+            <h1 class="font-display text-7xl md:text-8xl font-extrabold tracking-tighter leading-none mb-4">
+                <span class="accent-gradient">eFOOTBALL</span><br>
+                <span class="text-white">KENYA</span>
+            </h1>
+            <p class="max-w-lg mx-auto text-2xl md:text-3xl font-light tracking-tight text-zinc-400 mb-10">
+                Where legends are made.<br>Compete. Rise. Dominate.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="document.getElementById('tournaments').scrollIntoView({ behavior: 'smooth' })" 
+                        class="group px-10 py-4 text-lg font-semibold rounded-3xl bg-white text-zinc-950 flex items-center justify-center gap-x-3 hover:bg-zinc-100 active:scale-[0.985] transition-all shadow-xl">
+                    <span>Browse Tournaments</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </button>
+                
+                <button onclick="showRegisterModal()" 
+                        class="px-8 py-4 text-lg font-semibold rounded-3xl border border-white/30 hover:bg-white/5 active:scale-[0.985] transition-all flex items-center gap-x-3">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Join as Player</span>
+                </button>
+            </div>
+            
+            <div class="mt-16 flex justify-center gap-x-8 text-sm">
+                <div class="flex items-center gap-x-2 text-zinc-400">
+                    <i class="fa-solid fa-users text-lg"></i>
+                    <span><span class="font-mono font-semibold text-white" id="hero-player-count">2,847</span> players</span>
+                </div>
+                <div class="flex items-center gap-x-2 text-zinc-400">
+                    <i class="fa-solid fa-trophy text-lg"></i>
+                    <span><span class="font-mono font-semibold text-white">184</span> tournaments hosted</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-xs tracking-widest text-white/40">
+            <span>SCROLL TO EXPLORE</span>
+            <i class="fa-solid fa-chevron-down mt-1 animate-bounce"></i>
+        </div>
+    </header>
+
+    <!-- LATEST TOURNAMENT + COUNTDOWN + FEATURED -->
+    <section class="max-w-screen-2xl mx-auto px-6 pb-16 -mt-6 relative z-20">
+        <div class="grid lg:grid-cols-12 gap-6">
+            
+            <!-- Latest Tournament Card -->
+            <div class="lg:col-span-7 glass rounded-3xl p-8 border border-white/10 elegant-shadow">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <div class="flex items-center gap-x-3">
+                            <span class="px-4 py-1 text-xs font-bold tracking-wider bg-lime-400 text-zinc-950 rounded-2xl">LIVE NOW</span>
+                            <span class="text-lime-400 text-sm font-medium">eFootball Champions Cup S3</span>
+                        </div>
+                        <h3 class="font-display text-4xl font-bold tracking-tight mt-2">eFootball Champions Cup</h3>
+                        <p class="text-zinc-400 mt-1">32 players • Knockout • KES 15,000 prize pool</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-white/50">STARTS IN</div>
+                        <div id="countdown" class="font-mono text-4xl font-bold tabular-nums text-lime-400 tracking-tighter"></div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex -space-x-2">
+                        <img src="https://picsum.photos/id/1005/36/36" class="w-9 h-9 rounded-full ring-2 ring-zinc-950 object-cover" alt="">
+                        <img src="https://picsum.photos/id/1011/36/36" class="w-9 h-9 rounded-full ring-2 ring-zinc-950 object-cover" alt="">
+                        <img src="https://picsum.photos/id/201/36/36" class="w-9 h-9 rounded-full ring-2 ring-zinc-950 object-cover" alt="">
+                        <div class="w-9 h-9 rounded-full bg-zinc-800 ring-2 ring-zinc-950 flex items-center justify-center text-xs font-bold">+29</div>
+                    </div>
+                    
+                    <button onclick="document.getElementById('tournaments').scrollIntoView({ behavior: 'smooth' })" 
+                            class="px-8 py-3 text-sm font-semibold rounded-2xl bg-gradient-to-r from-lime-400 to-cyan-400 text-zinc-950 flex items-center gap-x-2 active:scale-[0.985]">
+                        <span>Register Now</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Players -->
+            <div class="lg:col-span-5 glass rounded-3xl p-8 border border-white/10 elegant-shadow">
+                <div class="flex justify-between items-center mb-5">
+                    <h4 class="font-semibold tracking-tight text-xl">Featured Players</h4>
+                    <button onclick="document.getElementById('players').scrollIntoView({ behavior: 'smooth' })" class="text-xs flex items-center gap-x-1 text-cyan-400 hover:text-cyan-300">
+                        VIEW ALL <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="featured-players">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOURNAMENTS SECTION -->
+    <section id="tournaments" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-4 mb-8">
+            <div>
+                <span class="text-cyan-400 text-sm font-semibold tracking-[3px]">COMPETE</span>
+                <h2 class="section-header tracking-tighter">Active Tournaments</h2>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Filters -->
+                <div class="flex items-center bg-zinc-900 border border-white/10 rounded-2xl p-1 text-sm">
+                    <button onclick="filterTournaments('all')" class="filter-btn active px-5 py-1.5 rounded-[14px]" data-filter="all">All</button>
+                    <button onclick="filterTournaments('open')" class="filter-btn px-5 py-1.5 rounded-[14px]" data-filter="open">Open</button>
+                    <button onclick="filterTournaments('ongoing')" class="filter-btn px-5 py-1.5 rounded-[14px]" data-filter="ongoing">Ongoing</button>
+                    <button onclick="filterTournaments('completed')" class="filter-btn px-5 py-1.5 rounded-[14px]" data-filter="completed">Completed</button>
+                </div>
+                
+                <div class="relative">
+                    <input id="tournament-search" type="text" placeholder="Search tournaments..." 
+                           onkeyup="filterTournaments()" 
+                           class="bg-zinc-900 border border-white/10 text-sm pl-10 pr-4 py-3 rounded-2xl w-64 focus:outline-none focus:border-cyan-400/60">
+                    <i class="fa-solid fa-search absolute left-4 top-4 text-white/40"></i>
+                </div>
+                
+                <button onclick="showCreateTournamentModal()" 
+                        class="hidden admin-only px-6 py-3 text-sm font-semibold rounded-2xl bg-gradient-to-r from-purple-500 to-violet-600 hover:brightness-110 active:scale-[0.985] flex items-center gap-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>New Tournament</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tournament Cards Grid -->
+        <div id="tournaments-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Populated dynamically by JS -->
+        </div>
+    </section>
+
+    <!-- FIXTURES SECTION -->
+    <section id="fixtures" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10 bg-zinc-900/30">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <span class="text-purple-400 text-sm font-semibold tracking-[3px]">MATCH DAY</span>
+                <h2 class="section-header tracking-tighter">Fixtures &amp; Results</h2>
+            </div>
+            <div>
+                <select id="fixture-tournament-select" onchange="loadFixturesForTournament()" 
+                        class="bg-zinc-950 border border-white/20 text-sm px-5 py-3 rounded-2xl focus:outline-none">
+                    <option value="">Select a tournament...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl border border-white/10 p-1">
+            <div id="fixtures-container" class="min-h-[420px] p-6">
+                <div class="flex flex-col items-center justify-center h-80 text-center text-white/40">
+                    <i class="fa-solid fa-calendar-days text-5xl mb-4 opacity-30"></i>
+                    <p class="max-w-xs">Select a tournament above to view its fixtures and live results.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 flex justify-end">
+            <button onclick="generateFixtures()" id="generate-fixtures-btn"
+                    class="hidden admin-only text-xs px-5 py-2 rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2">
+                <i class="fa-solid fa-magic"></i>
+                <span>Auto-Generate Fixtures</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section id="leaderboard" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-y-4">
+            <div>
+                <span class="text-lime-400 text-sm font-semibold tracking-[3px]">RANKINGS</span>
+                <h2 class="section-header tracking-tighter">Global Leaderboard</h2>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <select id="leaderboard-filter" onchange="renderLeaderboard()" class="bg-zinc-900 border border-white/10 px-4 py-2 text-sm rounded-2xl">
+                    <option value="all">All Time</option>
+                    <option value="season">Season 3</option>
+                </select>
+                <button onclick="renderLeaderboard()" class="px-4 py-2 text-sm border border-white/10 hover:bg-white/5 rounded-2xl flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl border border-white/10 overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-white/10 text-xs uppercase tracking-wider text-white/50">
+                        <th class="px-8 py-5 text-left font-medium w-12">#</th>
+                        <th class="px-4 py-5 text-left font-medium">Player</th>
+                        <th class="px-4 py-5 text-center font-medium hidden md:table-cell">Country</th>
+                        <th class="px-4 py-5 text-center font-medium">Wins</th>
+                        <th class="px-4 py-5 text-center font-medium">Losses</th>
+                        <th class="px-4 py-5 text-center font-medium">Goals</th>
+                        <th class="px-6 py-5 text-right font-medium">Points</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body" class="text-sm divide-y divide-white/5">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+        <p class="text-center text-[10px] text-white/40 mt-4">Points: 3 for a win • 1 for a draw. Updated live after every match.</p>
+    </section>
+
+    <!-- PLAYER PROFILES -->
+    <section id="players" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <span class="text-cyan-400 text-sm font-semibold tracking-[3px]">COMMUNITY</span>
+                <h2 class="section-header tracking-tighter">Player Directory</h2>
+            </div>
+            <div class="relative w-72">
+                <input id="player-search" type="text" placeholder="Search players or username..." onkeyup="filterPlayers()"
+                       class="w-full bg-zinc-900 border border-white/10 pl-11 py-3 text-sm rounded-2xl focus:outline-none focus:border-cyan-400/60">
+                <i class="fa-solid fa-search absolute left-4 top-4 text-white/40"></i>
+            </div>
+        </div>
+
+        <div id="players-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+            <!-- Populated dynamically -->
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10 bg-zinc-900/30">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <span class="text-purple-400 text-sm font-semibold tracking-[3px]">MEMORIES</span>
+                <h2 class="section-header tracking-tighter">Tournament Gallery</h2>
+            </div>
+            <button onclick="uploadToGallery()" class="flex items-center gap-x-2 px-5 py-2.5 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5">
+                <i class="fa-solid fa-upload"></i>
+                <span>Upload Highlight</span>
+            </button>
+        </div>
+
+        <div id="gallery-grid" class="masonry-grid">
+            <!-- Populated by JS with images -->
+        </div>
+    </section>
+
+    <!-- COMMUNITY / CONTACT -->
+    <section class="max-w-screen-2xl mx-auto px-6 py-16 border-t border-white/10">
+        <div class="grid lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-3">
+                <h2 class="font-display text-5xl font-bold tracking-tighter mb-3">Join the community</h2>
+                <p class="text-xl text-zinc-400 max-w-md">Connect with thousands of Kenyan eFootball players. Share highlights, find teammates, and stay updated.</p>
+                
+                <div class="flex gap-x-3 mt-8">
+                    <a href="https://wa.me/254712345678?text=Hello%20eFootball%20Kenya%20team!" target="_blank"
+                       class="flex-1 md:flex-none px-8 py-4 rounded-3xl flex items-center justify-center gap-x-3 bg-[#25D366] hover:brightness-105 text-white font-semibold transition-all active:scale-[0.985]">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>Chat on WhatsApp</span>
+                    </a>
+                    <button onclick="simulateDiscordConnect()" 
+                            class="flex-1 md:flex-none px-8 py-4 rounded-3xl flex items-center justify-center gap-x-3 border border-white/30 hover:bg-white/5 font-semibold transition-all">
+                        <i class="fa-brands fa-discord text-2xl"></i>
+                        <span>Join Discord</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-2 glass rounded-3xl p-8 border border-white/10">
+                <h4 class="font-semibold mb-4">Get in touch</h4>
+                <form onsubmit="submitContactForm(event)">
+                    <div class="space-y-4">
+                        <input type="text" placeholder="Your name" class="w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm focus:outline-none" required>
+                        <input type="email" placeholder="Email address" class="w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm focus:outline-none" required>
+                        <textarea placeholder="Message or tournament idea..." rows="3" class="w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm focus:outline-none resize-y" required></textarea>
+                        <button type="submit" class="w-full py-3.5 rounded-2xl bg-white text-zinc-950 font-semibold active:scale-[0.985]">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/10 py-10 text-xs text-white/40">
+        <div class="max-w-screen-2xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-y-4 text-center md:text-left">
+            <div>© 2026 eFootball Kenya. All rights reserved. Not affiliated with Konami.</div>
+            <div class="flex gap-x-5 justify-center">
+                <span class="cursor-pointer hover:text-white/70">Privacy</span>
+                <span class="cursor-pointer hover:text-white/70">Rules</span>
+                <span class="cursor-pointer hover:text-white/70">Fair Play</span>
+                <span onclick="showAdminLoginHint()" class="cursor-pointer hover:text-white/70">Admin Access</span>
+            </div>
+            <div>Made for Kenyan eFootball community • PWA ready</div>
+        </div>
+    </footer>
+
+    <!-- ============ MODALS ============ -->
+
+    <!-- Login Modal -->
+    <div id="login-modal" onclick="if (event.target.id === 'login-modal') hideLoginModal()" class="hidden fixed inset-0 z-[70] bg-black/70 flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl border border-white/10 p-8 modal">
+            <div class="flex justify-between mb-6">
+                <h3 class="font-display text-3xl font-bold">Welcome back</h3>
+                <button onclick="hideLoginModal()" class="text-3xl leading-none text-white/50 hover:text-white">&times;</button>
+            </div>
+            
+            <div class="space-y-4">
+                <button onclick="simulateGoogleLogin()" 
+                        class="w-full flex items-center justify-center gap-x-3 py-3.5 rounded-2xl border border-white/20 hover:bg-white/5 font-medium">
+                    <i class="fa-brands fa-google text-xl"></i>
+                    <span>Continue with Google</span>
+                </button>
+                
+                <div class="relative my-5">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
+                    <div class="relative flex justify-center"><span class="bg-zinc-950 px-3 text-xs text-white/50">or with email</span></div>
+                </div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs tracking-wider text-white/60 block mb-1.5">EMAIL OR USERNAME</label>
+                            <input id="login-email" type="text" value="player@efkenya.com" class="w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm focus:outline-none" required>
+                        </div>
+                        <div>
+                            <label class="text-xs tracking-wider text-white/60 block mb-1.5">PASSWORD</label>
+                            <input id="login-password" type="password" value="demo123" class="w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm focus:outline-none" required>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center gap-x-2 cursor-pointer">
+                                <input type="checkbox" checked class="accent-cyan-400"> Remember me
+                            </label>
+                            <span class="text-cyan-400 cursor-pointer">Forgot password?</span>
+                        </div>
+                        
+                        <button type="submit" class="mt-2 w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-500 text-zinc-950 font-extrabold active:scale-[0.985]">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+                
+                <p class="text-center text-xs text-white/40">Demo: Use <span class="font-mono">admin@efkenya.com</span> / admin123 for admin access</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tournament Detail + Register Modal -->
+    <div id="tournament-modal" onclick="if (event.target.id === 'tournament-modal') hideTournamentModal()" class="hidden fixed inset-0 z-[70] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-2xl rounded-3xl border border-white/10 max-h-[92dvh] overflow-auto custom-scrollbar modal">
+            <div class="p-8">
+                <div class="flex justify-between items-start">
+                    <div id="tournament-modal-header"></div>
+                    <button onclick="hideTournamentModal()" class="text-4xl leading-none text-white/40 hover:text-white">&times;</button>
+                </div>
+                
+                <div id="tournament-modal-body" class="mt-6"></div>
+                
+                <!-- Registration Form -->
+                <div id="registration-form-section" class="mt-8 pt-8 border-t border-white/10">
+                    <h4 class="font-semibold mb-4 flex items-center gap-x-2"><i class="fa-solid fa-user-plus"></i> Register for this tournament</h4>
+                    
+                    <form id="registration-form" onsubmit="submitRegistration(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                            <div>
+                                <label class="text-xs text-white/60">FULL NAME</label>
+                                <input name="full_name" type="text" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl" required>
+                            </div>
+                            <div>
+                                <label class="text-xs text-white/60">eFOOTBALL USERNAME</label>
+                                <input name="ef_username" type="text" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl" required>
+                            </div>
+                            <div>
+                                <label class="text-xs text-white/60">PLATFORM</label>
+                                <select name="platform" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl" required>
+                                    <option value="PS5">PlayStation 5</option>
+                                    <option value="Xbox">Xbox Series X</option>
+                                    <option value="PC">PC (Steam)</option>
+                                    <option value="Mobile">Mobile</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-white/60">PHONE NUMBER (M-Pesa)</label>
+                                <input name="phone" type="tel" value="2547" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs text-white/60">EMAIL</label>
+                                <input name="email" type="email" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-xs text-white/60">TEAM / CLUB NAME</label>
+                                <input name="team" type="text" placeholder="e.g. Gor Mahia eFC or Solo" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 text-sm rounded-2xl">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex items-center justify-between text-xs px-1">
+                            <div class="flex items-center gap-x-2 text-lime-400">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Payment via M-Pesa required to complete registration</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="mt-5 w-full py-4 rounded-2xl font-extrabold bg-gradient-to-r from-lime-400 via-cyan-400 to-lime-400 text-zinc-950 active:scale-[0.985]">
+                            PROCEED TO PAYMENT (M-PESA)
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- M-Pesa Payment Simulation Modal -->
+    <div id="mpesa-modal" onclick="if (event.target.id === 'mpesa-modal') hideMpesaModal()" class="hidden fixed inset-0 z-[80] bg-black/80 flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl border border-white/10 p-8 modal">
+            <div class="text-center">
+                <div class="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl mb-5">
+                    <i class="fa-solid fa-mobile-alt text-4xl text-white"></i>
+                </div>
+                <h3 class="font-display text-2xl font-bold">M-Pesa STK Push</h3>
+                <p class="text-sm text-white/60 mt-1">Confirm payment on your phone to complete registration</p>
+            </div>
+            
+            <div class="my-7">
+                <label class="text-xs tracking-widest text-white/50">M-PESA PHONE NUMBER</label>
+                <input id="mpesa-phone" type="tel" value="254712345678" class="mt-2 w-full text-center text-3xl font-mono tracking-widest bg-zinc-950 border border-white/20 px-6 py-4 rounded-2xl focus:outline-none">
+                
+                <div class="mt-4 text-xs flex items-center justify-center gap-x-2 text-white/50">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <span>You will receive a prompt on your phone</span>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="simulateMpesaPayment()" 
+                        class="w-full py-4 rounded-2xl bg-[#00A651] hover:bg-[#008C44] font-extrabold text-lg active:scale-[0.985] transition-all">
+                    SEND STK PUSH
+                </button>
+                <button onclick="hideMpesaModal()" class="w-full py-3 text-sm text-white/60">Cancel</button>
+            </div>
+            
+            <div id="mpesa-status" class="hidden mt-4 text-center text-sm"></div>
+        </div>
+    </div>
+
+    <!-- Player Profile Modal -->
+    <div id="player-modal" onclick="if (event.target.id === 'player-modal') hidePlayerModal()" class="hidden fixed inset-0 z-[70] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-3xl rounded-3xl border border-white/10 overflow-hidden modal">
+            <div id="player-modal-content">
+                <!-- Dynamic content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="hidden fixed inset-0 z-[90] bg-zinc-950 overflow-auto">
+        <div class="max-w-screen-2xl mx-auto">
+            <!-- Dashboard Header -->
+            <div class="flex items-center justify-between border-b border-white/10 px-8 py-5 sticky top-0 bg-zinc-950 z-10">
+                <div class="flex items-center gap-x-4">
+                    <div class="w-9 h-9 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-white"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-2xl font-bold">Admin Portal</span>
+                        <span class="ml-3 px-3 py-px text-xs rounded bg-purple-500/20 text-purple-400">SUPER ADMIN</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-x-3">
+                    <div class="text-xs px-4 py-2 bg-white/5 rounded-2xl flex items-center gap-x-2">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span id="admin-name">Admin User</span>
+                    </div>
+                    <button onclick="closeAdminDashboard()" class="px-6 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5">Close Dashboard</button>
+                </div>
+            </div>
+            
+            <!-- Dashboard Tabs - Mobile Friendly -->
+            <div class="flex border-b border-white/10 px-4 md:px-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                <div onclick="switchAdminTab(0)" class="admin-tab active flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer border-b-2 border-purple-500 whitespace-nowrap" data-tab="0">Overview</div>
+                <div onclick="switchAdminTab(1)" class="admin-tab flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer whitespace-nowrap" data-tab="1">Tournaments</div>
+                <div onclick="switchAdminTab(2)" class="admin-tab flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer whitespace-nowrap" data-tab="2">Registrations</div>
+                <div onclick="switchAdminTab(3)" class="admin-tab flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer whitespace-nowrap" data-tab="3">Fixtures</div>
+                <div onclick="switchAdminTab(4)" class="admin-tab flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer whitespace-nowrap" data-tab="4">Players</div>
+                <div onclick="switchAdminTab(5)" class="admin-tab flex-shrink-0 px-5 md:px-6 py-4 text-sm font-semibold cursor-pointer whitespace-nowrap" data-tab="5">Analytics</div>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="p-8">
+                <!-- Overview Tab -->
+                <div id="admin-tab-0" class="admin-tab-content">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+                        <div class="glass p-5 rounded-3xl border border-white/10">
+                            <div class="text-xs text-white/50">TOTAL PLAYERS</div>
+                            <div id="admin-stat-players" class="text-5xl font-mono font-bold mt-1">2,847</div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-white/10">
+                            <div class="text-xs text-white/50">ACTIVE TOURNAMENTS</div>
+                            <div id="admin-stat-tourneys" class="text-5xl font-mono font-bold mt-1">14</div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-white/10">
+                            <div class="text-xs text-white/50">PENDING REGISTRATIONS</div>
+                            <div id="admin-stat-pending" class="text-5xl font-mono font-bold mt-1 text-amber-400">37</div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-white/10">
+                            <div class="text-xs text-white/50">TOTAL PRIZE PAID</div>
+                            <div class="text-5xl font-mono font-bold mt-1">KES <span id="admin-stat-revenue">1.24m</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass p-6 rounded-3xl border border-white/10">
+                        <h5 class="font-semibold mb-4">Quick Actions</h5>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="showCreateTournamentModal(); closeAdminDashboard()" class="px-5 py-2.5 text-sm rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2"><i class="fa-solid fa-plus mr-2"></i> Create New Tournament</button>
+                            <button onclick="switchAdminTab(2)" class="px-5 py-2.5 text-sm rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2"><i class="fa-solid fa-user-check mr-2"></i> Review Pending Registrations</button>
+                            <button onclick="generateFixtures()" class="px-5 py-2.5 text-sm rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2"><i class="fa-solid fa-magic mr-2"></i> Generate Fixtures</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tournaments Management -->
+                <div id="admin-tab-1" class="admin-tab-content hidden">
+                    <div class="flex justify-between mb-5">
+                        <h4 class="font-semibold">Manage Tournaments</h4>
+                        <button onclick="showCreateTournamentModal()" class="px-5 py-2 text-xs font-medium rounded-2xl bg-purple-600 hover:bg-purple-500 flex items-center"><i class="fa-solid fa-plus mr-2"></i> ADD NEW</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead><tr class="text-left border-b border-white/10 text-xs uppercase text-white/40"><th class="py-3 px-4">Name</th><th>Date</th><th>Fee</th><th>Players</th><th>Status</th><th class="text-right pr-4">Actions</th></tr></thead>
+                            <tbody id="admin-tournaments-table" class="divide-y divide-white/10"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Registrations -->
+                <div id="admin-tab-2" class="admin-tab-content hidden">
+                    <h4 class="font-semibold mb-4">Pending Registrations <span id="pending-count-badge" class="ml-2 text-xs px-3 py-px rounded-full bg-amber-400/20 text-amber-400"></span></h4>
+                    <div id="admin-registrations-list" class="space-y-3 max-h-[520px] overflow-auto pr-2 custom-scrollbar"></div>
+                </div>
+                
+                <!-- Fixtures & Scores -->
+                <div id="admin-tab-3" class="admin-tab-content hidden">
+                    <div class="flex justify-between mb-5">
+                        <h4 class="font-semibold">Update Live Scores &amp; Results</h4>
+                        <button onclick="generateFixtures()" class="text-xs px-4 py-2 border border-white/20 rounded-2xl hover:bg-white/5">Re-generate for selected</button>
+                    </div>
+                    <div id="admin-fixtures-list"></div>
+                </div>
+                
+                <!-- Players -->
+                <div id="admin-tab-4" class="admin-tab-content hidden">
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-semibold">All Registered Players</h4>
+                        <button onclick="exportPlayersCSV()" class="text-xs flex items-center gap-x-2 px-4 py-2 border border-white/20 rounded-2xl"><i class="fa-solid fa-download"></i> Export CSV</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead><tr class="border-b border-white/10 text-xs text-white/40"><th class="py-3 px-4 text-left">Player</th><th>Username</th><th>Rating</th><th>W/L</th><th class="text-right pr-4">Actions</th></tr></thead>
+                            <tbody id="admin-players-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Analytics -->
+                <div id="admin-tab-5" class="admin-tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="glass rounded-3xl p-6 border border-white/10">
+                            <h5 class="font-medium mb-4">Tournament Participation</h5>
+                            <canvas id="chart-participation" height="140"></canvas>
+                        </div>
+                        <div class="glass rounded-3xl p-6 border border-white/10">
+                            <h5 class="font-medium mb-4">Platform Distribution</h5>
+                            <canvas id="chart-platform" height="140"></canvas>
+                        </div>
+                        <div class="glass rounded-3xl p-6 border border-white/10 lg:col-span-2">
+                            <h5 class="font-medium mb-4">Monthly Registration Trend</h5>
+                            <canvas id="chart-trend" height="90"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-y-2"></div>
+
+    <!-- MOBILE BOTTOM NAVIGATION (Phone Optimized) -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-[95] bg-zinc-950/95 backdrop-blur-xl border-t border-white/10 pb-safe">
+        <div class="grid grid-cols-5 text-center text-xs py-1.5">
+            <a href="#home" class="flex flex-col items-center py-1 active:text-cyan-400 text-white/70">
+                <i class="fa-solid fa-home text-lg mb-0.5"></i>
+                <span class="text-[10px]">Home</span>
+            </a>
+            <a href="#tournaments" class="flex flex-col items-center py-1 active:text-cyan-400 text-white/70">
+                <i class="fa-solid fa-trophy text-lg mb-0.5"></i>
+                <span class="text-[10px]">Tourneys</span>
+            </a>
+            <a href="#fixtures" class="flex flex-col items-center py-1 active:text-cyan-400 text-white/70">
+                <i class="fa-solid fa-calendar-days text-lg mb-0.5"></i>
+                <span class="text-[10px]">Fixtures</span>
+            </a>
+            <a href="#leaderboard" class="flex flex-col items-center py-1 active:text-cyan-400 text-white/70">
+                <i class="fa-solid fa-chart-line text-lg mb-0.5"></i>
+                <span class="text-[10px]">Ranks</span>
+            </a>
+            <a href="#players" class="flex flex-col items-center py-1 active:text-cyan-400 text-white/70">
+                <i class="fa-solid fa-users text-lg mb-0.5"></i>
+                <span class="text-[10px]">Players</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating Install PWA Button (Mobile) -->
+    <button onclick="promptPWAInstall()" 
+            class="md:hidden fixed bottom-20 right-4 z-[96] w-12 h-12 flex items-center justify-center bg-gradient-to-br from-cyan-400 to-purple-500 text-zinc-950 rounded-2xl shadow-xl active:scale-95">
+        <i class="fa-solid fa-download text-xl"></i>
+    </button>
+
+    <script>
+        // ==================== TAILWIND CONFIG ====================
+        function initTailwind() {
+            document.documentElement.style.setProperty('--accent-cyan', '#22f3ff');
+            
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif']
+                        }
+                    }
+                }
+            };
+        }
+
+        // ==================== GLOBAL DATA (Simulated Database) ====================
+        let db = {
+            currentUser: null,
+            tournaments: [],
+            players: [],
+            registrations: [],
+            fixtures: [],
+            gallery: []
+        };
+
+        function saveToLocalStorage() {
+            localStorage.setItem('efkenya_db', JSON.stringify(db));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('efkenya_db');
+            if (saved) {
+                db = JSON.parse(saved);
+                // Ensure arrays exist
+                db.tournaments = db.tournaments || [];
+                db.players = db.players || [];
+                db.registrations = db.registrations || [];
+                db.fixtures = db.fixtures || [];
+                db.gallery = db.gallery || [];
+            } else {
+                initSampleData();
+            }
+        }
+
+        function initSampleData() {
+            // Sample Tournaments
+            db.tournaments = [
+                {
+                    id: 1,
+                    name: "eFootball Champions Cup S3",
+                    date: "2026-07-20",
+                    entry_fee: 500,
+                    max_players: 32,
+                    registered_count: 24,
+                    prize_pool: 16000,
+                    status: "open",
+                    type: "knockout",
+                    description: "The biggest knockout tournament of the season. Top 32 players battle for the ultimate title and massive prize pool.",
+                    created_at: "2026-06-10"
+                },
+                {
+                    id: 2,
+                    name: "Nairobi Elite League",
+                    date: "2026-07-05",
+                    entry_fee: 250,
+                    max_players: 16,
+                    registered_count: 16,
+                    prize_pool: 4000,
+                    status: "ongoing",
+                    type: "round_robin",
+                    description: "Round-robin league for Nairobi's top talents. Every match counts towards the final standings.",
+                    created_at: "2026-06-01"
+                },
+                {
+                    id: 3,
+                    name: "Mombasa Coastal Cup",
+                    date: "2026-08-12",
+                    entry_fee: 350,
+                    max_players: 24,
+                    registered_count: 9,
+                    prize_pool: 8400,
+                    status: "open",
+                    type: "swiss",
+                    description: "Swiss system tournament. Perfect for players of all skill levels along the coast.",
+                    created_at: "2026-06-20"
+                },
+                {
+                    id: 4,
+                    name: "Kenya National Championship 2026",
+                    date: "2026-06-15",
+                    entry_fee: 1000,
+                    max_players: 64,
+                    registered_count: 64,
+                    prize_pool: 64000,
+                    status: "completed",
+                    type: "knockout",
+                    description: "The national championship. Winner represents Kenya at the African eFootball Cup.",
+                    created_at: "2026-05-01"
+                }
+            ];
+
+            // Sample Players
+            db.players = [
+                { id: 1, name: "Alex Mwangi", username: "AlexProKE", country: "Kenya", phone: "254712345678", email: "alex@efkenya.com", rating: 94, wins: 47, losses: 12, goals: 132, avatar: "https://picsum.photos/id/1005/200/200", level: 58, xp: 28400, club: "Gor Mahia eFC", achievements: ["Tournament Champion", "Top Scorer", "Clean Sheet King"], platform: "PS5" },
+                { id: 2, name: "Brian Ochieng", username: "BrianTheBeast", country: "Kenya", phone: "254722987654", email: "brian@efkenya.com", rating: 91, wins: 39, losses: 18, goals: 98, avatar: "https://picsum.photos/id/1011/200/200", level: 51, xp: 22100, club: "AFC Leopards", achievements: ["Tournament Champion", "MVP"], platform: "Xbox" },
+                { id: 3, name: "Fatima Hassan", username: "FatiQueen", country: "Kenya", phone: "254733112233", email: "fatima@efkenya.com", rating: 88, wins: 31, losses: 14, goals: 67, avatar: "https://picsum.photos/id/201/200/200", level: 44, xp: 16750, club: "Thika United eSports", achievements: ["Rising Star"], platform: "PC" },
+                { id: 4, name: "Samuel Kiptoo", username: "SamKip", country: "Kenya", phone: "254745667788", email: "sam@efkenya.com", rating: 85, wins: 26, losses: 21, goals: 54, avatar: "https://picsum.photos/id/29/200/200", level: 39, xp: 13200, club: "Ulinzi Stars FC", achievements: ["Fair Play Award"], platform: "PS5" },
+                { id: 5, name: "Grace Wanjiku", username: "GraceW", country: "Kenya", phone: "254700112233", email: "grace@efkenya.com", rating: 82, wins: 22, losses: 19, goals: 41, avatar: "https://picsum.photos/id/160/200/200", level: 35, xp: 9800, club: "Mathare United", achievements: [], platform: "Mobile" }
+            ];
+
+            // Sample Registrations
+            db.registrations = [
+                { id: 1, tournament_id: 1, full_name: "Peter Kamau", ef_username: "PeteK", platform: "PS5", phone: "254711223344", email: "peter@efkenya.com", team: "Kamau FC", payment_status: "confirmed", status: "approved", created_at: "2026-06-15" },
+                { id: 2, tournament_id: 1, full_name: "Diana Njeri", ef_username: "DiNjeri", platform: "Xbox", phone: "254722556677", email: "diana@efkenya.com", team: "", payment_status: "confirmed", status: "pending", created_at: "2026-06-22" }
+            ];
+
+            // Sample Fixtures
+            db.fixtures = [
+                { id: 1, tournament_id: 1, round: "Round of 32", player1: "Alex Mwangi", player2: "Brian Ochieng", score1: 3, score2: 1, winner: "Alex Mwangi", kickoff: "2026-07-20T14:00", status: "completed" },
+                { id: 2, tournament_id: 1, round: "Round of 32", player1: "Fatima Hassan", player2: "Samuel Kiptoo", score1: 2, score2: 2, winner: null, kickoff: "2026-07-20T15:30", status: "completed" },
+                { id: 3, tournament_id: 2, round: "Matchday 3", player1: "Alex Mwangi", player2: "Grace Wanjiku", score1: 4, score2: 0, winner: "Alex Mwangi", kickoff: "2026-07-05T18:00", status: "completed" }
+            ];
+
+            // Sample Gallery
+            db.gallery = [
+                { id: 1, url: "https://picsum.photos/id/1015/800/600", caption: "Grand Final - Champions Cup 2025", type: "photo" },
+                { id: 2, url: "https://picsum.photos/id/160/800/600", caption: "Nairobi Qualifiers Crowd", type: "photo" },
+                { id: 3, url: "https://picsum.photos/id/201/800/600", caption: "Alex Mwangi vs Brian Ochieng - Epic Semifinal", type: "photo" },
+                { id: 4, url: "https://picsum.photos/id/29/800/600", caption: "Trophy Ceremony - Kenya National 2025", type: "photo" }
+            ];
+
+            saveToLocalStorage();
+        }
+
+        // ==================== UTILITIES ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let icon = 'fa-check-circle';
+            let bg = 'bg-emerald-500';
+            
+            if (type === 'error') { icon = 'fa-exclamation-circle'; bg = 'bg-red-500'; }
+            if (type === 'info') { icon = 'fa-info-circle'; bg = 'bg-sky-500'; }
+            if (type === 'warning') { icon = 'fa-exclamation-triangle'; bg = 'bg-amber-500'; }
+            
+            toast.className = `flex items-center gap-x-3 px-6 py-4 rounded-2xl text-white shadow-2xl ${bg} max-w-xs`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-xl"></i>
+                <span class="text-sm font-medium">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function calculatePrize(entryFee, numPlayers) {
+            return entryFee * numPlayers;
+        }
+
+        // Confetti effect
+        function launchConfetti() {
+            const colors = ['#22f3ff', '#a855f7', '#84cc16'];
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = `fixed w-2.5 h-2.5 rounded-full z-[200]`;
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = '-10px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.opacity = Math.random() + 0.6;
+                    document.body.appendChild(particle);
+                    
+                    const duration = Math.random() * 2500 + 2200;
+                    const angle = Math.random() * 60 + 60;
+                    
+                    particle.animate([
+                        { transform: `translateY(0) rotate(0deg)`, opacity: particle.style.opacity },
+                        { transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 4}deg)`, opacity: 0 }
+                    ], {
+                        duration: duration,
+                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+                    }).onfinish = () => particle.remove();
+                }, i * 1.5);
+            }
+        }
+
+        // ==================== NAV / UI ====================
+        function updateUserUI() {
+            const userArea = document.getElementById('user-area');
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const adminOnlyEls = document.querySelectorAll('.admin-only');
+            
+            if (db.currentUser) {
+                userArea.classList.remove('hidden');
+                userArea.classList.add('flex');
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                
+                document.getElementById('nav-avatar').src = db.currentUser.avatar || 'https://picsum.photos/id/1005/32/32';
+                document.getElementById('nav-username').textContent = db.currentUser.username || db.currentUser.name.split(' ')[0];
+                
+                // Show admin buttons if admin
+                adminOnlyEls.forEach(el => {
+                    if (db.currentUser.role === 'admin') {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                });
+
+                // Show Quick Admin floating button on mobile for admins
+                const quickAdminBtn = document.getElementById('quick-admin-btn');
+                if (quickAdminBtn) {
+                    if (db.currentUser.role === 'admin') {
+                        quickAdminBtn.classList.remove('hidden');
+                        quickAdminBtn.classList.add('flex');
+                    } else {
+                        quickAdminBtn.classList.add('hidden');
+                        quickAdminBtn.classList.remove('flex');
+                    }
+                }
+            } else {
+                userArea.classList.add('hidden');
+                userArea.classList.remove('flex');
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                adminOnlyEls.forEach(el => el.classList.add('hidden'));
+                
+                const quickAdminBtn = document.getElementById('quick-admin-btn');
+                if (quickAdminBtn) {
+                    quickAdminBtn.classList.add('hidden');
+                    quickAdminBtn.classList.remove('flex');
+                }
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function highlightActiveNav() {
+            const sections = ['home', 'tournaments', 'fixtures', 'leaderboard', 'players', 'gallery'];
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (!section) return;
+                    const sectionTop = section.getBoundingClientRect().top;
+                    if (sectionTop <= 180) current = sectionId;
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active', 'text-white');
+                    if (link.getAttribute('data-section') === current) {
+                        link.classList.add('active', 'text-white');
+                    }
+                });
+            });
+        }
+
+        // ==================== HERO COUNTDOWN ====================
+        function startCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            // Set target to July 20, 2026
+            const targetDate = new Date('2026-07-20T14:00:00').getTime();
+            
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                if (distance < 0) {
+                    clearInterval(interval);
+                    countdownEl.innerHTML = `<span class="text-lime-400">LIVE</span>`;
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                
+                countdownEl.innerHTML = `
+                    <span class="countdown-digit inline-block bg-zinc-900 px-2.5 py-0.5 rounded-xl border border-white/10">${days}</span>d 
+                    <span class="countdown-digit inline-block bg-zinc-900 px-2.5 py-0.5 rounded-xl border border-white/10">${hours}</span>h 
+                    <span class="countdown-digit inline-block bg-zinc-900 px-2.5 py-0.5 rounded-xl border border-white/10">${minutes}</span>m
+                `;
+            }, 1000 * 30); // update every 30s
+        }
+
+        // ==================== FEATURED PLAYERS ====================
+        function renderFeaturedPlayers() {
+            const container = document.getElementById('featured-players');
+            container.innerHTML = '';
+            
+            const featured = db.players.slice(0, 4);
+            
+            featured.forEach(player => {
+                const div = document.createElement('div');
+                div.className = `player-card cursor-pointer bg-zinc-900 border border-white/10 rounded-2xl p-3 flex flex-col items-center text-center`;
+                div.innerHTML = `
+                    <img src="${player.avatar}" class="w-14 h-14 rounded-2xl object-cover mb-2 ring-1 ring-white/10" alt="${player.name}">
+                    <div class="font-semibold text-sm">${player.name.split(' ')[0]}</div>
+                    <div class="text-[10px] text-white/50">${player.username}</div>
+                    <div class="flex items-center gap-x-1 mt-1.5">
+                        <div class="px-2 py-px text-[10px] font-mono bg-white/10 rounded">${player.rating}</div>
+                    </div>
+                `;
+                div.onclick = () => showPlayerProfile(player.id);
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== TOURNAMENTS ====================
+        function renderTournaments(filtered = null) {
+            const grid = document.getElementById('tournaments-grid');
+            grid.innerHTML = '';
+            
+            let list = filtered || db.tournaments;
+            
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-white/40">No tournaments found matching your filters.</div>`;
+                return;
+            }
+            
+            list.forEach(tourney => {
+                const registered = tourney.registered_count || 0;
+                const max = tourney.max_players;
+                const progress = Math.min(Math.round((registered / max) * 100), 100);
+                const prize = tourney.prize_pool || calculatePrize(tourney.entry_fee, max);
+                
+                let statusHTML = '';
+                if (tourney.status === 'open') {
+                    statusHTML = `<span class="status-badge bg-lime-400/10 text-lime-400">Registration Open</span>`;
+                } else if (tourney.status === 'ongoing') {
+                    statusHTML = `<span class="status-badge bg-sky-400/10 text-sky-400">Ongoing</span>`;
+                } else {
+                    statusHTML = `<span class="status-badge bg-white/10 text-white/60">Completed</span>`;
+                }
+                
+                const card = document.createElement('div');
+                card.className = `tournament-card glass border border-white/10 rounded-3xl p-6 cursor-pointer flex flex-col`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="font-display text-2xl font-extrabold tracking-tight leading-none">${tourney.name}</div>
+                            <div class="text-xs text-white/40 mt-1 flex items-center gap-x-1.5">
+                                <i class="fa-regular fa-calendar"></i> 
+                                <span>${formatDate(tourney.date)}</span>
+                            </div>
+                        </div>
+                        ${statusHTML}
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div class="flex justify-between text-sm mb-1.5">
+                            <span class="text-white/60">Players</span>
+                            <span class="font-mono font-semibold">${registered}/${max}</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded mb-4 overflow-hidden">
+                            <div class="h-2 bg-gradient-to-r from-cyan-400 to-lime-400 transition-all" style="width: ${progress}%"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-x-4 text-sm">
+                            <div>
+                                <div class="text-xs text-white/50">ENTRY FEE</div>
+                                <div class="font-semibold">KES ${tourney.entry_fee}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-white/50">PRIZE POOL</div>
+                                <div class="font-semibold text-lime-400">KES ${prize.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-5 mt-auto flex items-center justify-between border-t border-white/10">
+                        <div class="text-xs px-3 py-1 bg-white/5 rounded-2xl">${tourney.type.replace('_', ' ').toUpperCase()}</div>
+                        
+                        <button onclick="event.stopImmediatePropagation(); viewTournament(${tourney.id});" 
+                                class="text-xs px-5 py-2 font-semibold rounded-2xl border border-white/30 hover:bg-white hover:text-zinc-950 active:scale-95 transition-all">
+                            ${tourney.status === 'open' ? 'REGISTER' : 'VIEW DETAILS'}
+                        </button>
+                    </div>
+                `;
+                
+                card.onclick = () => viewTournament(tourney.id);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterTournaments(mode = null) {
+            const searchVal = document.getElementById('tournament-search')?.value.toLowerCase() || '';
+            
+            let filtered = db.tournaments;
+            
+            if (mode && mode !== 'all') {
+                filtered = filtered.filter(t => t.status === mode);
+            }
+            
+            if (searchVal) {
+                filtered = filtered.filter(t => 
+                    t.name.toLowerCase().includes(searchVal) || 
+                    t.description.toLowerCase().includes(searchVal)
+                );
+            }
+            
+            renderTournaments(filtered);
+        }
+
+        function viewTournament(id) {
+            const tourney = db.tournaments.find(t => t.id === id);
+            if (!tourney) return;
+            
+            const modal = document.getElementById('tournament-modal');
+            const header = document.getElementById('tournament-modal-header');
+            const body = document.getElementById('tournament-modal-body');
+            const regSection = document.getElementById('registration-form-section');
+            
+            header.innerHTML = `
+                <div>
+                    <div class="flex items-center gap-x-3">
+                        <span class="px-4 py-1 text-xs font-bold tracking-wider rounded-2xl ${tourney.status === 'open' ? 'bg-lime-400 text-zinc-950' : 'bg-white/10'}">${tourney.status.toUpperCase()}</span>
+                        <span class="font-mono text-xs text-white/40">${tourney.type.toUpperCase().replace('_', ' ')}</span>
+                    </div>
+                    <h3 class="font-display text-4xl font-extrabold tracking-tighter mt-1">${tourney.name}</h3>
+                </div>
+            `;
+            
+            const prize = tourney.prize_pool || calculatePrize(tourney.entry_fee, tourney.max_players);
+            
+            body.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 text-center mb-7">
+                    <div class="glass p-4 rounded-2xl">
+                        <div class="text-xs text-white/50">DATE</div>
+                        <div class="font-semibold mt-1">${formatDate(tourney.date)}</div>
+                    </div>
+                    <div class="glass p-4 rounded-2xl">
+                        <div class="text-xs text-white/50">PLAYERS</div>
+                        <div class="font-semibold mt-1">${tourney.registered_count} / ${tourney.max_players}</div>
+                    </div>
+                    <div class="glass p-4 rounded-2xl">
+                        <div class="text-xs text-white/50">PRIZE POOL</div>
+                        <div class="font-semibold text-lime-400 mt-1">KES ${prize.toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <p class="text-sm leading-relaxed text-white/70">${tourney.description}</p>
+                
+                <div class="mt-6 flex items-center gap-x-4 text-xs">
+                    <div class="px-3 py-1 bg-white/5 rounded-2xl">Entry Fee: <span class="font-mono">KES ${tourney.entry_fee}</span></div>
+                    <div class="px-3 py-1 bg-white/5 rounded-2xl">Format: <span class="capitalize">${tourney.type.replace('_', ' ')}</span></div>
+                </div>
+            `;
+            
+            // Show/hide registration form
+            if (tourney.status === 'open') {
+                regSection.style.display = 'block';
+                // Pre-fill if logged in
+                setTimeout(() => {
+                    if (db.currentUser) {
+                        const form = document.getElementById('registration-form');
+                        if (form) {
+                            form.full_name.value = db.currentUser.name || '';
+                            form.ef_username.value = db.currentUser.username || '';
+                            form.email.value = db.currentUser.email || '';
+                            form.phone.value = db.currentUser.phone || '2547';
+                        }
+                    }
+                }, 50);
+            } else {
+                regSection.style.display = 'none';
+            }
+            
+            // Store current tourney id on form
+            const form = document.getElementById('registration-form');
+            form.dataset.tournamentId = id;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideTournamentModal() {
+            const modal = document.getElementById('tournament-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // ==================== REGISTRATION + M-PESA ====================
+        function submitRegistration(e) {
+            e.preventDefault();
+            const form = e.target;
+            const tourneyId = parseInt(form.dataset.tournamentId);
+            const tourney = db.tournaments.find(t => t.id === tourneyId);
+            
+            if (!tourney || tourney.status !== 'open') {
+                showToast("Registration is closed for this tournament.", "error");
+                return;
+            }
+            
+            // Hide tourney modal, show M-Pesa
+            hideTournamentModal();
+            
+            // Store form data temporarily
+            window.tempRegData = {
+                tournament_id: tourneyId,
+                full_name: form.full_name.value,
+                ef_username: form.ef_username.value,
+                platform: form.platform.value,
+                phone: form.phone.value,
+                email: form.email.value,
+                team: form.team.value || 'Independent'
+            };
+            
+            // Show M-Pesa modal
+            setTimeout(() => {
+                document.getElementById('mpesa-modal').classList.remove('hidden');
+                document.getElementById('mpesa-modal').classList.add('flex');
+                document.getElementById('mpesa-phone').value = window.tempRegData.phone;
+            }, 280);
+        }
+
+        function hideMpesaModal() {
+            const modal = document.getElementById('mpesa-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.getElementById('mpesa-status').classList.add('hidden');
+        }
+
+        function simulateMpesaPayment() {
+            const statusDiv = document.getElementById('mpesa-status');
+            const phone = document.getElementById('mpesa-phone').value;
+            
+            statusDiv.innerHTML = `
+                <div class="flex items-center justify-center gap-x-2 text-emerald-400">
+                    <i class="fa-solid fa-spinner fa-spin"></i> 
+                    <span>Sending STK Push to ${phone}...</span>
+                </div>
+            `;
+            statusDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusDiv.innerHTML = `
+                    <div class="text-center">
+                        <i class="fa-solid fa-check-circle text-3xl text-emerald-400"></i>
+                        <div class="mt-2 font-medium">Payment Confirmed!</div>
+                        <div class="text-xs text-white/50">Transaction ID: MPX${Date.now().toString().slice(-8)}</div>
+                    </div>
+                `;
+                
+                // Complete registration
+                setTimeout(() => {
+                    completeRegistrationAfterPayment();
+                    hideMpesaModal();
+                }, 1400);
+            }, 2100);
+        }
+
+        function completeRegistrationAfterPayment() {
+            if (!window.tempRegData) return;
+            
+            const regData = window.tempRegData;
+            
+            // Create new registration
+            const newReg = {
+                id: Date.now(),
+                ...regData,
+                payment_status: "confirmed",
+                status: "pending", // Needs admin approval
+                created_at: new Date().toISOString().split('T')[0]
+            };
+            
+            db.registrations.push(newReg);
+            
+            // Update tournament registered count
+            const tourney = db.tournaments.find(t => t.id === regData.tournament_id);
+            if (tourney) {
+                tourney.registered_count = (tourney.registered_count || 0) + 1;
+            }
+            
+            // Optionally create a player profile immediately (or wait for approval)
+            // For better UX we create a basic player record
+            let existingPlayer = db.players.find(p => p.username.toLowerCase() === regData.ef_username.toLowerCase());
+            if (!existingPlayer) {
+                const newPlayer = {
+                    id: Date.now(),
+                    name: regData.full_name,
+                    username: regData.ef_username,
+                    country: "Kenya",
+                    phone: regData.phone,
+                    email: regData.email,
+                    rating: 65 + Math.floor(Math.random() * 20),
+                    wins: 0, losses: 0, goals: 0,
+                    avatar: `https://picsum.photos/id/${Math.floor(Math.random()*30)+10}/200/200`,
+                    level: 12,
+                    xp: 1200,
+                    club: regData.team || "Independent",
+                    achievements: [],
+                    platform: regData.platform
+                };
+                db.players.push(newPlayer);
+            }
+            
+            saveToLocalStorage();
+            
+            // Refresh UI
+            renderTournaments();
+            renderPlayers();
+            renderLeaderboard();
+            
+            showToast("Registration successful! Awaiting admin approval. Check WhatsApp for updates.", "success");
+            
+            // Fake WhatsApp notification
+            setTimeout(() => {
+                showToast("WhatsApp message sent: 'Your registration for " + db.tournaments.find(t => t.id === regData.tournament_id).name + " is confirmed. Payment received.'", "info");
+            }, 3200);
+            
+            window.tempRegData = null;
+        }
+
+        // ==================== FIXTURES ====================
+        function populateFixtureTournamentSelect() {
+            const select = document.getElementById('fixture-tournament-select');
+            select.innerHTML = '<option value="">Select a tournament...</option>';
+            
+            db.tournaments.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = `${t.name} (${t.status})`;
+                select.appendChild(opt);
+            });
+        }
+
+        function loadFixturesForTournament() {
+            const select = document.getElementById('fixture-tournament-select');
+            const container = document.getElementById('fixtures-container');
+            const tourneyId = parseInt(select.value);
+            
+            if (!tourneyId) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-80 text-center text-white/40">
+                        <i class="fa-solid fa-calendar-days text-5xl mb-4 opacity-30"></i>
+                        <p>Select a tournament above to view fixtures.</p>
+                    </div>`;
+                return;
+            }
+            
+            const tourney = db.tournaments.find(t => t.id === tourneyId);
+            const fixtures = db.fixtures.filter(f => f.tournament_id === tourneyId);
+            
+            let html = `<div class="mb-4 flex items-center justify-between"><div><span class="font-semibold">${tourney.name}</span> <span class="text-xs px-3 py-px ml-2 rounded bg-white/10">${tourney.type}</span></div>`;
+            
+            if (db.currentUser && db.currentUser.role === 'admin') {
+                html += `<button onclick="generateFixturesForTournament(${tourneyId})" class="text-xs px-4 py-1.5 border border-white/20 rounded-2xl hover:bg-white/5">Generate / Regenerate Fixtures</button>`;
+            }
+            html += `</div>`;
+            
+            if (fixtures.length === 0) {
+                html += `
+                    <div class="text-center py-12 text-white/40">
+                        <p>No fixtures generated yet for this tournament.</p>
+                        ${db.currentUser && db.currentUser.role === 'admin' ? 
+                            `<button onclick="generateFixturesForTournament(${tourneyId})" class="mt-4 px-6 py-2 text-sm rounded-2xl border border-white/20">Generate Fixtures Now</button>` : 
+                            ''}
+                    </div>`;
+            } else {
+                // Group by round
+                const rounds = {};
+                fixtures.forEach(f => {
+                    if (!rounds[f.round]) rounds[f.round] = [];
+                    rounds[f.round].push(f);
+                });
+                
+                Object.keys(rounds).forEach(roundName => {
+                    html += `<div class="mb-6"><div class="font-semibold mb-3 px-1 text-sm tracking-wider text-white/70">${roundName}</div>`;
+                    
+                    rounds[roundName].forEach(fix => {
+                        const isLive = fix.status === 'live';
+                        const isCompleted = fix.status === 'completed';
+                        
+                        html += `
+                            <div class="fixture-row glass mb-2 px-5 py-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-y-3 border border-white/5">
+                                <div class="flex-1 flex items-center justify-between md:justify-start gap-x-4">
+                                    <div class="font-medium flex-1 text-right md:text-left">${fix.player1}</div>
+                                    
+                                    <div class="text-center min-w-[92px]">
+                                        ${isCompleted || fix.score1 !== null ? 
+                                            `<span class="font-mono text-xl font-bold tabular-nums">${fix.score1 || 0} - ${fix.score2 || 0}</span>` : 
+                                            `<span class="px-4 py-1 text-xs rounded-xl border border-white/30">VS</span>`}
+                                        
+                                        ${isLive ? `<div class="text-[10px] mt-px text-red-400 flex items-center justify-center gap-x-1"><span class="live-dot w-1.5 h-1.5 bg-red-400 rounded-full inline-block"></span> LIVE</div>` : ''}
+                                    </div>
+                                    
+                                    <div class="font-medium flex-1">${fix.player2}</div>
+                                </div>
+                                
+                                <div class="flex items-center gap-x-3 text-xs justify-end md:justify-start">
+                                    <div class="font-mono text-white/50">${fix.kickoff ? fix.kickoff.split('T')[1] || 'TBD' : 'TBD'}</div>
+                                    
+                                    ${db.currentUser && db.currentUser.role === 'admin' ? `
+                                        <button onclick="updateFixtureScore(${fix.id}, ${tourneyId})" class="px-4 py-1 rounded-xl border border-white/20 hover:bg-white/5">Update Score</button>
+                                    ` : ''}
+                                    
+                                    ${isCompleted && fix.winner ? `<span class="text-lime-400 text-xs px-3 py-px">Winner: ${fix.winner.split(' ')[0]}</span>` : ''}
+                                </div>
+                            </div>`;
+                    });
+                    
+                    html += `</div>`;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function generateFixturesForTournament(tourneyId) {
+            const tourney = db.tournaments.find(t => t.id === tourneyId);
+            if (!tourney) return;
+            
+            // Get registered players for this tournament (simplified - use all players or from registrations)
+            let registeredPlayers = db.players.slice(0, tourney.registered_count || 8);
+            
+            if (registeredPlayers.length < 2) {
+                showToast("Not enough players registered to generate fixtures.", "warning");
+                return;
+            }
+            
+            // Remove old fixtures for this tournament
+            db.fixtures = db.fixtures.filter(f => f.tournament_id !== tourneyId);
+            
+            // Simple pairing for Round 1 (knockout style)
+            const shuffled = [...registeredPlayers].sort(() => Math.random() - 0.5);
+            const newFixtures = [];
+            
+            for (let i = 0; i < shuffled.length - 1; i += 2) {
+                newFixtures.push({
+                    id: Date.now() + i,
+                    tournament_id: tourneyId,
+                    round: "Round of " + (tourney.max_players || 16),
+                    player1: shuffled[i].name,
+                    player2: shuffled[i + 1].name,
+                    score1: null,
+                    score2: null,
+                    winner: null,
+                    kickoff: tourney.date + "T14:00",
+                    status: "upcoming"
+                });
+            }
+            
+            db.fixtures.push(...newFixtures);
+            saveToLocalStorage();
+            
+            showToast(`Generated ${newFixtures.length} fixtures for ${tourney.name}`, "success");
+            loadFixturesForTournament();
+            
+            // Also refresh admin view if open
+            if (!document.getElementById('admin-dashboard').classList.contains('hidden')) {
+                renderAdminFixtures();
+            }
+        }
+
+        function generateFixtures() {
+            const select = document.getElementById('fixture-tournament-select');
+            if (!select.value) {
+                showToast("Please select a tournament first", "warning");
+                return;
+            }
+            generateFixturesForTournament(parseInt(select.value));
+        }
+
+        function updateFixtureScore(fixtureId, tourneyId) {
+            const fixture = db.fixtures.find(f => f.id === fixtureId);
+            if (!fixture) return;
+            
+            const newScore1 = prompt(`Enter score for ${fixture.player1}:`, fixture.score1 || 0);
+            if (newScore1 === null) return;
+            
+            const newScore2 = prompt(`Enter score for ${fixture.player2}:`, fixture.score2 || 0);
+            if (newScore2 === null) return;
+            
+            fixture.score1 = parseInt(newScore1) || 0;
+            fixture.score2 = parseInt(newScore2) || 0;
+            fixture.status = "completed";
+            
+            if (fixture.score1 > fixture.score2) {
+                fixture.winner = fixture.player1;
+            } else if (fixture.score2 > fixture.score1) {
+                fixture.winner = fixture.player2;
+            } else {
+                fixture.winner = null; // draw
+            }
+            
+            saveToLocalStorage();
+            loadFixturesForTournament();
+            renderLeaderboard();
+            
+            // Push notification for live score update
+            if (checkNotificationStatus()) {
+                showPushNotification(
+                    "Live Score Update",
+                    `${fixture.player1} ${fixture.score1} - ${fixture.score2} ${fixture.player2}`,
+                    "https://picsum.photos/id/160/96/96"
+                );
+            }
+            
+            // If final match, celebrate
+            if (fixture.round.toLowerCase().includes('final') || fixture.round.includes('32') && db.fixtures.filter(f => f.tournament_id === tourneyId && f.status === 'completed').length > 15) {
+                launchConfetti();
+                showToast("Tournament milestone reached! Leaderboard updated.", "success");
+            } else {
+                showToast("Score updated successfully. Leaderboard refreshed.", "success");
+            }
+            
+            // Refresh admin fixtures if dashboard open
+            if (!document.getElementById('admin-dashboard').classList.contains('hidden')) {
+                renderAdminFixtures();
+            }
+        }
+
+        // ==================== LEADERBOARD ====================
+        function calculateLeaderboardData() {
+            const playerStats = {};
+            
+            // Initialize from players
+            db.players.forEach(p => {
+                playerStats[p.id] = {
+                    id: p.id,
+                    name: p.name,
+                    username: p.username,
+                    country: p.country,
+                    avatar: p.avatar,
+                    wins: p.wins || 0,
+                    losses: p.losses || 0,
+                    goals: p.goals || 0,
+                    points: (p.wins || 0) * 3
+                };
+            });
+            
+            // Update from completed fixtures
+            db.fixtures.forEach(fix => {
+                if (fix.status !== 'completed' || !fix.winner) return;
+                
+                // Find player1 and player2 ids by name (simplified matching)
+                const p1 = db.players.find(pl => pl.name === fix.player1);
+                const p2 = db.players.find(pl => pl.name === fix.player2);
+                
+                if (p1 && playerStats[p1.id]) {
+                    if (fix.winner === fix.player1) {
+                        playerStats[p1.id].wins = (playerStats[p1.id].wins || 0) + 1;
+                        playerStats[p1.id].points = (playerStats[p1.id].points || 0) + 3;
+                    } else if (fix.winner === fix.player2) {
+                        playerStats[p1.id].losses = (playerStats[p1.id].losses || 0) + 1;
+                    }
+                    playerStats[p1.id].goals = (playerStats[p1.id].goals || 0) + (fix.score1 || 0);
+                }
+                
+                if (p2 && playerStats[p2.id]) {
+                    if (fix.winner === fix.player2) {
+                        playerStats[p2.id].wins = (playerStats[p2.id].wins || 0) + 1;
+                        playerStats[p2.id].points = (playerStats[p2.id].points || 0) + 3;
+                    } else if (fix.winner === fix.player1) {
+                        playerStats[p2.id].losses = (playerStats[p2.id].losses || 0) + 1;
+                    }
+                    playerStats[p2.id].goals = (playerStats[p2.id].goals || 0) + (fix.score2 || 0);
+                }
+            });
+            
+            // Convert to array and sort
+            return Object.values(playerStats).sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.goals - a.goals;
+            });
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            
+            const data = calculateLeaderboardData();
+            const filter = document.getElementById('leaderboard-filter').value;
+            
+            let displayData = data;
+            // For demo, season filter does nothing special
+            
+            displayData.slice(0, 12).forEach((player, index) => {
+                const row = document.createElement('tr');
+                row.className = `leaderboard-row cursor-pointer ${index < 3 ? 'bg-white/[0.015]' : ''}`;
+                row.innerHTML = `
+                    <td class="px-8 py-4 font-mono text-lg font-bold text-white/70">${index + 1}</td>
+                    <td class="px-4 py-4">
+                        <div class="flex items-center gap-x-3">
+                            <img src="${player.avatar}" class="w-9 h-9 rounded-2xl object-cover ring-1 ring-white/10" alt="">
+                            <div>
+                                <div class="font-semibold">${player.name}</div>
+                                <div class="text-xs text-white/50">@${player.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 text-center hidden md:table-cell">
+                        <span class="text-xs px-3 py-1 rounded-xl bg-white/5">${player.country}</span>
+                    </td>
+                    <td class="px-4 py-4 text-center font-mono font-semibold">${player.wins}</td>
+                    <td class="px-4 py-4 text-center font-mono text-white/60">${player.losses}</td>
+                    <td class="px-4 py-4 text-center font-mono">${player.goals}</td>
+                    <td class="px-6 py-4 text-right">
+                        <span class="font-mono text-xl font-extrabold text-lime-400">${player.points}</span>
+                    </td>
+                `;
+                row.onclick = () => showPlayerProfile(player.id);
+                tbody.appendChild(row);
+            });
+        }
+
+        // ==================== PLAYERS ====================
+        function renderPlayers(filteredPlayers = null) {
+            const grid = document.getElementById('players-grid');
+            grid.innerHTML = '';
+            
+            const list = filteredPlayers || db.players;
+            
+            list.forEach(player => {
+                const card = document.createElement('div');
+                card.className = `player-card glass border border-white/10 rounded-3xl p-5 cursor-pointer`;
+                card.innerHTML = `
+                    <div class="flex gap-x-4">
+                        <img src="${player.avatar}" class="w-16 h-16 rounded-2xl object-cover ring-1 ring-white/10 flex-shrink-0" alt="${player.name}">
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold truncate">${player.name}</div>
+                            <div class="text-xs text-white/50">@${player.username}</div>
+                            
+                            <div class="flex items-center justify-between mt-3">
+                                <div>
+                                    <span class="font-mono text-xl font-bold">${player.rating}</span>
+                                    <span class="text-[10px] text-white/40">OVR</span>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs"><span class="font-semibold text-lime-400">${player.wins}</span> <span class="text-white/40">W</span> <span class="font-semibold">${player.losses}</span> <span class="text-white/40">L</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                card.onclick = () => showPlayerProfile(player.id);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterPlayers() {
+            const term = document.getElementById('player-search').value.toLowerCase();
+            const filtered = db.players.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                p.username.toLowerCase().includes(term) ||
+                (p.club && p.club.toLowerCase().includes(term))
+            );
+            renderPlayers(filtered);
+        }
+
+        function showPlayerProfile(playerId) {
+            const player = db.players.find(p => p.id === playerId);
+            if (!player) return;
+            
+            const modal = document.getElementById('player-modal');
+            const content = document.getElementById('player-modal-content');
+            
+            const winRate = player.wins + player.losses > 0 ? Math.round((player.wins / (player.wins + player.losses)) * 100) : 0;
+            
+            content.innerHTML = `
+                <div class="relative">
+                    <!-- Cover / Header -->
+                    <div class="h-40 bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-end p-7" style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(10,10,15,0.85)), url('https://picsum.photos/id/1018/1200/400'); background-size: cover; background-position: center;">
+                        <div class="flex items-end gap-x-5 w-full">
+                            <img src="${player.avatar}" class="w-24 h-24 rounded-3xl ring-4 ring-zinc-950 object-cover shadow-xl" alt="">
+                            <div class="flex-1 pb-1">
+                                <div class="flex items-center gap-x-3">
+                                    <h3 class="font-display text-4xl font-extrabold tracking-tighter">${player.name}</h3>
+                                    ${player.achievements && player.achievements.length > 0 ? `<span class="px-3 py-1 text-xs rounded-2xl bg-lime-400 text-zinc-950 font-bold">VERIFIED</span>` : ''}
+                                </div>
+                                <div class="flex items-center gap-x-3 text-sm">
+                                    <span class="font-mono">@${player.username}</span>
+                                    <span class="px-3 py-px text-xs rounded-xl bg-white/20">${player.country}</span>
+                                    <span class="text-xs text-white/60">${player.club || 'Free Agent'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-right">
+                                <div class="text-xs text-white/50">OVERALL</div>
+                                <div class="font-mono text-6xl font-black tracking-tighter text-white">${player.rating}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-7 pt-5">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div class="text-center p-4 glass rounded-2xl">
+                                <div class="text-xs text-white/50">LEVEL</div>
+                                <div class="font-mono text-4xl font-bold">${player.level}</div>
+                                <div class="text-[10px] text-white/40">${player.xp.toLocaleString()} XP</div>
+                            </div>
+                            <div class="text-center p-4 glass rounded-2xl">
+                                <div class="text-xs text-white/50">WIN RATE</div>
+                                <div class="font-mono text-4xl font-bold">${winRate}<span class="text-xl">%</span></div>
+                            </div>
+                            <div class="text-center p-4 glass rounded-2xl">
+                                <div class="text-xs text-white/50">WINS / LOSSES</div>
+                                <div class="font-mono text-3xl font-bold">${player.wins} <span class="text-white/40">/</span> ${player.losses}</div>
+                            </div>
+                            <div class="text-center p-4 glass rounded-2xl">
+                                <div class="text-xs text-white/50">GOALS SCORED</div>
+                                <div class="font-mono text-4xl font-bold">${player.goals}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Chart -->
+                        <div class="mb-7">
+                            <div class="flex justify-between items-center mb-3 px-1">
+                                <div class="font-semibold">Performance Overview</div>
+                            </div>
+                            <div class="glass p-4 rounded-3xl border border-white/10">
+                                <canvas id="player-performance-chart" height="120"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Achievements -->
+                        <div>
+                            <div class="font-semibold mb-3 px-1">Achievements</div>
+                            <div class="flex flex-wrap gap-2">
+                                ${player.achievements && player.achievements.length > 0 ? 
+                                    player.achievements.map(a => `<span class="px-4 py-1.5 text-xs rounded-2xl bg-white/5 border border-white/10">${a}</span>`).join('') : 
+                                    `<span class="text-xs text-white/40 px-3">No achievements unlocked yet. Keep competing!</span>`}
+                            </div>
+                        </div>
+                        
+                        <!-- Notification Settings (only for own profile) -->
+                        ${db.currentUser && db.currentUser.id === player.id ? `
+                        <div class="mt-6 pt-6 border-t border-white/10">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-semibold flex items-center gap-x-2">
+                                        <i class="fa-solid fa-bell text-cyan-400"></i>
+                                        <span>Push Notifications</span>
+                                    </div>
+                                    <div class="text-xs text-white/50 mt-0.5">Get match reminders, registration updates & tournament alerts</div>
+                                </div>
+                                <button onclick="requestNotificationPermission(); hidePlayerModal()" 
+                                        class="px-5 py-2 text-xs font-semibold rounded-2xl border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10 active:scale-95 transition-all">
+                                    ${Notification.permission === 'granted' ? 'Notifications On' : 'Enable Alerts'}
+                                </button>
+                            </div>
+                        </div>` : ''}
+
+                        <div class="mt-8 flex justify-end gap-x-3">
+                            ${db.currentUser && db.currentUser.id === player.id ? 
+                                `<button onclick="editPlayerProfile(${player.id}); hidePlayerModal()" class="px-6 py-3 text-sm rounded-2xl border border-white/20">Edit Profile</button>` : ''}
+                            <button onclick="hidePlayerModal()" class="px-8 py-3 text-sm font-semibold rounded-2xl bg-white text-zinc-950">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Render chart after modal is visible
+            setTimeout(() => {
+                const ctx = document.getElementById('player-performance-chart');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'radar',
+                        data: {
+                            labels: ['Attack', 'Defense', 'Passing', 'Dribbling', 'Physical', 'Mental'],
+                            datasets: [{
+                                label: player.username,
+                                data: [player.rating - 5, player.rating - 12, player.rating + 3, player.rating - 8, player.rating - 15, player.rating + 7],
+                                borderColor: '#22f3ff',
+                                backgroundColor: 'rgba(34, 243, 255, 0.15)',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#22f3ff'
+                            }]
+                        },
+                        options: {
+                            scales: { r: { angleLines: { color: '#27272a' }, grid: { color: '#27272a' }, pointLabels: { color: '#71717a', font: { size: 10 } }, ticks: { display: false } } },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+            }, 380);
+        }
+
+        function hidePlayerModal() {
+            const modal = document.getElementById('player-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function editPlayerProfile(playerId) {
+            // Simple prompt based editing for demo
+            const player = db.players.find(p => p.id === playerId);
+            if (!player) return;
+            
+            const newBio = prompt("Update your bio / club (demo):", player.club || '');
+            if (newBio !== null) {
+                player.club = newBio;
+                saveToLocalStorage();
+                showToast("Profile updated!", "success");
+                renderPlayers();
+                // Reopen modal with new data
+                setTimeout(() => showPlayerProfile(playerId), 600);
+            }
+        }
+
+        // ==================== GALLERY ====================
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+            
+            db.gallery.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `gallery-item relative overflow-hidden rounded-3xl border border-white/10 cursor-pointer group`;
+                div.innerHTML = `
+                    <img src="${item.url}" class="w-full h-auto object-cover" alt="${item.caption}">
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5">
+                        <div class="text-sm font-medium">${item.caption}</div>
+                    </div>
+                    <div class="absolute top-3 right-3 px-3 py-px text-[10px] rounded-2xl bg-black/60 text-white/70">${item.type.toUpperCase()}</div>
+                `;
+                div.onclick = () => showLightbox(item);
+                grid.appendChild(div);
+            });
+        }
+
+        function showLightbox(item) {
+            const lightbox = document.createElement('div');
+            lightbox.className = `fixed inset-0 z-[95] bg-black/90 flex items-center justify-center p-6`;
+            lightbox.innerHTML = `
+                <div class="max-w-4xl w-full relative">
+                    <img src="${item.url}" class="rounded-3xl max-h-[82dvh] w-full object-contain" alt="">
+                    <div class="absolute -bottom-2 left-0 right-0 bg-zinc-950/90 p-6 rounded-b-3xl text-center">
+                        <div class="font-medium">${item.caption}</div>
+                    </div>
+                    <button class="absolute top-4 right-4 text-white text-4xl hover:text-white/70">&times;</button>
+                </div>
+            `;
+            lightbox.onclick = (e) => {
+                if (e.target === lightbox || e.target.tagName === 'BUTTON') lightbox.remove();
+            };
+            document.body.appendChild(lightbox);
+        }
+
+        function uploadToGallery() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            
+            input.onchange = function() {
+                const file = this.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const newItem = {
+                        id: Date.now(),
+                        url: ev.target.result,
+                        caption: prompt("Caption for this highlight:", "New upload from " + (db.currentUser ? db.currentUser.name : "Player")) || "Community highlight",
+                        type: "photo"
+                    };
+                    
+                    db.gallery.unshift(newItem);
+                    saveToLocalStorage();
+                    renderGallery();
+                    showToast("Highlight added to gallery!", "success");
+                };
+                reader.readAsDataURL(file);
+            };
+            
+            input.click();
+        }
+
+        // ==================== AUTH ====================
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+
+        function hideLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.toLowerCase();
+            const pass = document.getElementById('login-password').value;
+            
+            // Demo accounts
+            let user = null;
+            
+            if (email.includes('admin') && pass === 'admin123') {
+                user = {
+                    id: 999,
+                    name: "Admin User",
+                    username: "admin",
+                    email: email,
+                    role: "admin",
+                    avatar: "https://picsum.photos/id/1005/200/200"
+                };
+            } else if (email.includes('player') || pass === 'demo123') {
+                // Find matching player or create demo
+                user = db.players.find(p => p.email.toLowerCase() === email) || db.players[0];
+                if (user) {
+                    user = {...user, role: "player"};
+                }
+            }
+            
+            if (user) {
+                db.currentUser = user;
+                saveToLocalStorage();
+                hideLoginModal();
+                updateUserUI();
+                showToast(`Welcome back, ${user.name.split(' ')[0]}!`, "success");
+                
+                // Automatically enable real push notifications (Firebase)
+                if (typeof enableRealPushNotifications === 'function') {
+                    setTimeout(() => {
+                        enableRealPushNotifications();
+                    }, 800);
+                }
+                
+                // If admin, offer to open dashboard
+                if (user.role === 'admin') {
+                    setTimeout(() => {
+                        if (confirm("Open Admin Dashboard now?")) {
+                            openAdminDashboard();
+                        }
+                    }, 900);
+                }
+            } else {
+                showToast("Invalid credentials. Try admin@efkenya.com / admin123 or player@efkenya.com / demo123", "error");
+            }
+        }
+
+        function simulateGoogleLogin() {
+            hideLoginModal();
+            
+            // Pick a random player or first one
+            let user = db.players[Math.floor(Math.random() * db.players.length)];
+            user = {...user, role: "player"};
+            
+            db.currentUser = user;
+            saveToLocalStorage();
+            updateUserUI();
+            showToast("Logged in via Google (demo)", "success");
+        }
+
+        function logoutUser() {
+            db.currentUser = null;
+            saveToLocalStorage();
+            updateUserUI();
+            showToast("Logged out successfully.");
+            
+            // Close admin if open
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        function showUserProfile() {
+            if (!db.currentUser) return;
+            if (db.currentUser.role === 'admin') {
+                openAdminDashboard();
+            } else {
+                showPlayerProfile(db.currentUser.id);
+            }
+        }
+
+        // ==================== ADMIN DASHBOARD ====================
+        function openAdminDashboard() {
+            if (!db.currentUser || db.currentUser.role !== 'admin') {
+                // Force admin login
+                const email = prompt("Admin email:", "admin@efkenya.com");
+                const pass = prompt("Admin password:", "admin123");
+                
+                if (email && pass === 'admin123') {
+                    db.currentUser = {
+                        id: 999, name: "Admin User", username: "admin", email: email, role: "admin",
+                        avatar: "https://picsum.photos/id/1005/200/200"
+                    };
+                    saveToLocalStorage();
+                    updateUserUI();
+                } else {
+                    showToast("Admin access denied.", "error");
+                    return;
+                }
+            }
+            
+            const dash = document.getElementById('admin-dashboard');
+            dash.classList.remove('hidden');
+            document.getElementById('admin-name').textContent = db.currentUser.name;
+            
+            // Render initial tab
+            switchAdminTab(0);
+            updateAdminStats();
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        }
+
+        function switchAdminTab(tabIndex) {
+            // Hide all
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active', 'border-b-2', 'border-purple-500'));
+            
+            // Show selected
+            document.getElementById(`admin-tab-${tabIndex}`).classList.remove('hidden');
+            document.querySelector(`.admin-tab[data-tab="${tabIndex}"]`).classList.add('active', 'border-b-2', 'border-purple-500');
+            
+            // Load content
+            if (tabIndex === 1) renderAdminTournaments();
+            if (tabIndex === 2) renderAdminRegistrations();
+            if (tabIndex === 3) renderAdminFixtures();
+            if (tabIndex === 4) renderAdminPlayers();
+            if (tabIndex === 5) renderAdminAnalytics();
+        }
+
+        function updateAdminStats() {
+            document.getElementById('admin-stat-players').textContent = db.players.length.toLocaleString();
+            document.getElementById('admin-stat-tourneys').textContent = db.tournaments.filter(t => t.status !== 'completed').length;
+            document.getElementById('admin-stat-pending').textContent = db.registrations.filter(r => r.status === 'pending').length;
+            
+            const totalPrize = db.tournaments.reduce((sum, t) => sum + (t.prize_pool || 0), 0);
+            document.getElementById('admin-stat-revenue').textContent = (totalPrize / 1000000).toFixed(1) + 'm';
+        }
+
+        function renderAdminTournaments() {
+            const tbody = document.getElementById('admin-tournaments-table');
+            tbody.innerHTML = '';
+            
+            db.tournaments.forEach(t => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-4 font-medium">${t.name}</td>
+                    <td class="px-4 py-4 text-xs text-white/60">${formatDate(t.date)}</td>
+                    <td class="px-4 py-4 font-mono">KES ${t.entry_fee}</td>
+                    <td class="px-4 py-4">${t.registered_count}/${t.max_players}</td>
+                    <td class="px-4 py-4"><span class="status-badge text-xs ${t.status === 'open' ? 'bg-lime-400/10 text-lime-400' : t.status === 'ongoing' ? 'bg-sky-400/10 text-sky-400' : 'bg-white/10'}">${t.status}</span></td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        <button onclick="adminEditTournament(${t.id})" class="text-xs px-4 py-1 border border-white/20 rounded-xl hover:bg-white/5">Edit</button>
+                        <button onclick="adminDeleteTournament(${t.id})" class="text-xs px-4 py-1 border border-red-400/30 text-red-400 rounded-xl hover:bg-red-950/60">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function adminEditTournament(id) {
+            const t = db.tournaments.find(x => x.id === id);
+            if (!t) return;
+            
+            const newName = prompt("Tournament name:", t.name);
+            if (!newName) return;
+            
+            t.name = newName;
+            const newFee = prompt("Entry fee (KES):", t.entry_fee);
+            if (newFee) t.entry_fee = parseInt(newFee);
+            const newMax = prompt("Max players:", t.max_players);
+            if (newMax) t.max_players = parseInt(newMax);
+            
+            saveToLocalStorage();
+            renderAdminTournaments();
+            renderTournaments();
+            showToast("Tournament updated.");
+        }
+
+        function adminDeleteTournament(id) {
+            if (!confirm("Delete this tournament permanently?")) return;
+            db.tournaments = db.tournaments.filter(t => t.id !== id);
+            db.fixtures = db.fixtures.filter(f => f.tournament_id !== id);
+            saveToLocalStorage();
+            renderAdminTournaments();
+            renderTournaments();
+            showToast("Tournament deleted.", "warning");
+        }
+
+        function renderAdminRegistrations() {
+            const container = document.getElementById('admin-registrations-list');
+            container.innerHTML = '';
+            
+            const pending = db.registrations.filter(r => r.status === 'pending');
+            document.getElementById('pending-count-badge').textContent = pending.length;
+            
+            if (pending.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-white/40">No pending registrations.</div>`;
+                return;
+            }
+            
+            pending.forEach(reg => {
+                const tourney = db.tournaments.find(t => t.id === reg.tournament_id);
+                const div = document.createElement('div');
+                div.className = `glass p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-y-4 border border-white/10`;
+                div.innerHTML = `
+                    <div>
+                        <div class="font-semibold">${reg.full_name} <span class="font-mono text-xs text-white/40">(@${reg.ef_username})</span></div>
+                        <div class="text-xs text-white/60">${reg.email} • ${reg.platform} • ${reg.team || 'No team'}</div>
+                        <div class="text-xs mt-1 text-lime-400">${tourney ? tourney.name : 'Unknown Tournament'}</div>
+                    </div>
+                    <div class="flex gap-x-2">
+                        <button onclick="approveRegistration(${reg.id})" class="px-6 py-2 text-xs font-semibold rounded-2xl bg-lime-400 text-zinc-950 active:scale-[0.985]">APPROVE</button>
+                        <button onclick="rejectRegistration(${reg.id})" class="px-5 py-2 text-xs font-semibold rounded-2xl border border-white/30">Reject</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function approveRegistration(regId) {
+            const reg = db.registrations.find(r => r.id === regId);
+            if (!reg) return;
+            
+            reg.status = "approved";
+            
+            // Update registered count
+            const tourney = db.tournaments.find(t => t.id === reg.tournament_id);
+            if (tourney) tourney.registered_count = (tourney.registered_count || 0) + 1;
+            
+            saveToLocalStorage();
+            renderAdminRegistrations();
+            renderTournaments();
+            updateAdminStats();
+            
+            showToast(`Approved registration for ${reg.full_name}. Player can now participate.`, "success");
+            
+            // Real push notification to player
+            notifyPlayerOnApproval(reg.full_name, tourney ? tourney.name : "the tournament");
+            
+            setTimeout(() => showToast("Player notified via push notification + WhatsApp (simulated).", "info"), 1600);
+        }
+
+        function rejectRegistration(regId) {
+            if (!confirm("Reject this registration?")) return;
+            db.registrations = db.registrations.filter(r => r.id !== regId);
+            saveToLocalStorage();
+            renderAdminRegistrations();
+            showToast("Registration rejected.", "warning");
+        }
+
+        function renderAdminFixtures() {
+            const container = document.getElementById('admin-fixtures-list');
+            container.innerHTML = `<div class="text-xs text-white/40 mb-3">Showing upcoming & live matches. Use "Update Score" to record results.</div>`;
+            
+            const upcoming = db.fixtures.filter(f => f.status !== 'completed').slice(0, 8);
+            
+            if (upcoming.length === 0) {
+                container.innerHTML += `<p class="text-center py-6 text-white/40">No upcoming fixtures. Generate fixtures from a tournament view.</p>`;
+                return;
+            }
+            
+            upcoming.forEach(fix => {
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between glass mb-2 px-5 py-3.5 rounded-2xl text-sm`;
+                div.innerHTML = `
+                    <div class="flex-1">
+                        <span class="font-medium">${fix.player1}</span> 
+                        <span class="text-white/40 mx-2">vs</span> 
+                        <span class="font-medium">${fix.player2}</span>
+                    </div>
+                    <div class="flex items-center gap-x-4 text-xs">
+                        <span class="font-mono text-white/50">${fix.round}</span>
+                        <button onclick="updateFixtureScore(${fix.id}); renderAdminFixtures()" class="px-5 py-1 rounded-xl border border-white/20">Update Score</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderAdminPlayers() {
+            const tbody = document.getElementById('admin-players-table');
+            tbody.innerHTML = '';
+            
+            db.players.forEach(p => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-3.5"><div class="flex items-center gap-x-3"><img src="${p.avatar}" class="w-8 h-8 rounded-2xl"><div>${p.name}</div></div></td>
+                    <td class="px-4 py-3.5 font-mono text-xs text-white/70">@${p.username}</td>
+                    <td class="px-4 py-3.5 font-mono">${p.rating}</td>
+                    <td class="px-4 py-3.5 font-mono">${p.wins}/${p.losses}</td>
+                    <td class="px-4 py-3.5 text-right">
+                        <button onclick="adminEditPlayer(${p.id})" class="text-xs px-4 py-1 border border-white/20 rounded-xl">Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function adminEditPlayer(id) {
+            const p = db.players.find(x => x.id === id);
+            if (!p) return;
+            const newRating = prompt("New rating (50-99):", p.rating);
+            if (newRating) {
+                p.rating = parseInt(newRating);
+                saveToLocalStorage();
+                renderAdminPlayers();
+                renderPlayers();
+                showToast("Player rating updated.");
+            }
+        }
+
+        function exportPlayersCSV() {
+            let csv = "Name,Username,Rating,Wins,Losses,Goals,Club\n";
+            db.players.forEach(p => {
+                csv += `"${p.name}","${p.username}",${p.rating},${p.wins},${p.losses},${p.goals},"${p.club || ''}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'efootball-kenya-players.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast("CSV exported successfully.");
+        }
+
+        function renderAdminAnalytics() {
+            // Participation chart
+            const ctx1 = document.getElementById('chart-participation');
+            if (ctx1 && !ctx1.chartInstance) {
+                ctx1.chartInstance = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: db.tournaments.map(t => t.name.substring(0, 18) + (t.name.length > 18 ? '...' : '')),
+                        datasets: [{
+                            label: 'Registered Players',
+                            data: db.tournaments.map(t => t.registered_count),
+                            backgroundColor: '#22f3ff'
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                });
+            }
+            
+            // Platform pie
+            const ctx2 = document.getElementById('chart-platform');
+            if (ctx2 && !ctx2.chartInstance) {
+                const platforms = {};
+                db.players.forEach(p => { platforms[p.platform] = (platforms[p.platform] || 0) + 1; });
+                ctx2.chartInstance = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(platforms),
+                        datasets: [{ data: Object.values(platforms), backgroundColor: ['#22f3ff', '#a855f7', '#84cc16', '#f43f5e'] }]
+                    }
+                });
+            }
+            
+            // Trend line (fake)
+            const ctx3 = document.getElementById('chart-trend');
+            if (ctx3 && !ctx3.chartInstance) {
+                ctx3.chartInstance = new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'New Registrations',
+                            data: [120, 190, 340, 280, 410, 520],
+                            borderColor: '#a855f7',
+                            tension: 0.35,
+                            fill: true,
+                            backgroundColor: 'rgba(168, 85, 247, 0.1)'
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        // ==================== CREATE TOURNAMENT ====================
+        function showCreateTournamentModal() {
+            const modalHTML = `
+                <div id="create-tourney-modal" onclick="document.getElementById('create-tourney-modal').remove()" class="fixed inset-0 z-[80] bg-black/70 flex items-center justify-center p-6">
+                    <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-lg rounded-3xl border border-white/10 p-8 modal">
+                        <h3 class="font-display text-3xl font-bold mb-6">Create New Tournament</h3>
+                        
+                        <form id="create-tourney-form" onsubmit="createNewTournament(event)">
+                            <div class="space-y-5">
+                                <div>
+                                    <label class="text-xs text-white/60">TOURNAMENT NAME</label>
+                                    <input name="name" type="text" value="eFootball Summer Showdown" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm" required>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs text-white/60">DATE</label>
+                                        <input name="date" type="date" value="2026-08-15" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white/60">ENTRY FEE (KES)</label>
+                                        <input name="entry_fee" type="number" value="400" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs text-white/60">MAX PLAYERS</label>
+                                        <input name="max_players" type="number" value="16" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-white/60">FORMAT</label>
+                                        <select name="type" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm">
+                                            <option value="knockout">Knockout</option>
+                                            <option value="round_robin">Round Robin</option>
+                                            <option value="swiss">Swiss System</option>
+                                            <option value="double_elimination">Double Elimination</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-xs text-white/60">DESCRIPTION</label>
+                                    <textarea name="description" rows="2" class="mt-1.5 w-full bg-zinc-950 border border-white/20 px-5 py-3 rounded-2xl text-sm">Exciting new tournament open to all skill levels.</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-7 flex gap-x-3">
+                                <button type="button" onclick="document.getElementById('create-tourney-modal').remove()" class="flex-1 py-3.5 rounded-2xl border border-white/20">Cancel</button>
+                                <button type="submit" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 to-violet-600 font-extrabold">CREATE TOURNAMENT</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function createNewTournament(e) {
+            e.preventDefault();
+            const form = e.target;
+            
+            const newTourney = {
+                id: Date.now(),
+                name: form.name.value,
+                date: form.date.value,
+                entry_fee: parseInt(form.entry_fee.value),
+                max_players: parseInt(form.max_players.value),
+                registered_count: 0,
+                prize_pool: parseInt(form.entry_fee.value) * parseInt(form.max_players.value),
+                status: "open",
+                type: form.type.value,
+                description: form.description.value,
+                created_at: new Date().toISOString().split('T')[0]
+            };
+            
+            db.tournaments.unshift(newTourney);
+            saveToLocalStorage();
+            
+            document.getElementById('create-tourney-modal').remove();
+            
+            renderTournaments();
+            showToast("Tournament created successfully! It is now live for registration.", "success");
+            
+            // Notify all players about the new tournament
+            notifyNewTournament(newTourney.name);
+            
+            // If admin dashboard open, refresh it
+            if (!document.getElementById('admin-dashboard').classList.contains('hidden')) {
+                renderAdminTournaments();
+            }
+        }
+
+        // ==================== MISC ====================
+        function submitContactForm(e) {
+            e.preventDefault();
+            showToast("Thank you! Your message has been received. We'll reply within 24 hours.", "success");
+            e.target.reset();
+        }
+
+        function simulateDiscordConnect() {
+            showToast("Discord integration simulated. In production this would open OAuth flow.", "info");
+            setTimeout(() => {
+                showToast("Welcome to the eFootball Kenya Discord server (demo)!", "success");
+            }, 1400);
+        }
+
+        // PWA Install Prompt for Mobile
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function promptPWAInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                });
+            } else {
+                showToast("To install: Use your browser menu → 'Add to Home Screen' or 'Install App'", "info");
+            }
+        }
+
+        // ==================== PUSH NOTIFICATIONS ====================
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                showToast("Your browser does not support notifications.", "error");
+                return false;
+            }
+
+            const permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                localStorage.setItem('efkenya_notifications_enabled', 'true');
+                showToast("Push notifications enabled! You'll get alerts for tournaments and matches.", "success");
+                
+                setTimeout(() => {
+                    showPushNotification(
+                        "eFootball Kenya", 
+                        "Notifications are now active. You'll receive match reminders and tournament updates.",
+                        "https://picsum.photos/id/1005/96/96"
+                    );
+                }, 1200);
+                return true;
+            } else {
+                showToast("Notification permission denied. Enable it in browser settings later.", "warning");
+                return false;
+            }
+        }
+
+        function showPushNotification(title, body, icon = null) {
+            if (Notification.permission !== 'granted') {
+                showToast(`${title}: ${body}`, "info");
+                return;
+            }
+
+            const options = {
+                body: body,
+                icon: icon || 'https://picsum.photos/id/1005/96/96',
+                badge: 'https://picsum.photos/id/1005/96/96',
+                vibrate: [200, 100, 200],
+                tag: 'efkenya-notification'
+            };
+
+            new Notification(title, options);
+        }
+
+        function checkNotificationStatus() {
+            const enabled = localStorage.getItem('efkenya_notifications_enabled') === 'true';
+            return Notification.permission === 'granted' && enabled;
+        }
+
+        function notifyPlayerOnApproval(playerName, tournamentName) {
+            if (checkNotificationStatus()) {
+                showPushNotification(
+                    "Registration Approved! 🎉",
+                    `Well done ${playerName.split(' ')[0]}! You're registered for ${tournamentName}.`,
+                    "https://picsum.photos/id/1005/96/96"
+                );
+            } else {
+                showToast(`Registration approved for ${playerName}.`, "success");
+            }
+        }
+
+        function notifyNewTournament(tournamentName) {
+            if (checkNotificationStatus()) {
+                showPushNotification(
+                    "New Tournament Added!",
+                    `${tournamentName} is now open for registration!`,
+                    "https://picsum.photos/id/29/96/96"
+                );
+            }
+        }
+
+        function sendTestNotification() {
+            if (Notification.permission !== 'granted') {
+                requestNotificationPermission().then(granted => {
+                    if (granted) sendTestNotification();
+                });
+                return;
+            }
+            
+            showPushNotification(
+                "Match Starting Soon",
+                "Your match vs Brian Ochieng starts in 15 minutes. Good luck!",
+                "https://picsum.photos/id/201/96/96"
+            );
+        }
+
+        function filterTournamentsByStatus(status) {
+            console.log('Filter called', status);
+        }
+
+        function showAdminLoginHint() {
+            showToast("To access Admin: Login with admin@efkenya.com / admin123", "info");
+        }
+
+        // ==================== PWA ====================
+        function initPWA() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            }
+            
+            // Install prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Show install toast once
+                setTimeout(() => {
+                    const toast = document.createElement('div');
+                    toast.className = `fixed bottom-20 left-1/2 -translate-x-1/2 glass px-5 py-3 rounded-3xl border border-white/10 flex items-center gap-x-4 text-sm shadow-xl z-[90]`;
+                    toast.innerHTML = `
+                        <span>Install eFootball Kenya as an app?</span>
+                        <button class="px-5 py-1.5 bg-white text-zinc-950 text-xs font-bold rounded-2xl">INSTALL</button>
+                    `;
+                    
+                    toast.querySelector('button').onclick = () => {
+                        deferredPrompt.prompt();
+                        toast.remove();
+                    };
+                    
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 9500);
+                }, 22000);
+            });
+            
+            // Add manifest dynamically
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = 'manifest.json';
+            document.head.appendChild(manifestLink);
+        }
+
+        // ==================== INITIALIZATION ====================
+        function initializeApp() {
+            initTailwind();
+            loadFromLocalStorage();
+            
+            // Render all sections
+            renderFeaturedPlayers();
+            renderTournaments();
+            populateFixtureTournamentSelect();
+            renderLeaderboard();
+            renderPlayers();
+            renderGallery();
+            startCountdown();
+            highlightActiveNav();
+            
+            // Update user UI
+            updateUserUI();
+            
+            // PWA
+            initPWA();
+            
+            // Demo: Show a welcome toast on first visit
+            if (!localStorage.getItem('efkenya_welcomed')) {
+                setTimeout(() => {
+                    showToast("Welcome to eFootball Kenya! All data is saved locally in your browser.", "info");
+                    localStorage.setItem('efkenya_welcomed', 'true');
+                }, 5200);
+            }
+            
+            // Keyboard shortcuts hint
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "/" && document.activeElement.tagName === "BODY") {
+                    e.preventDefault();
+                    const search = document.getElementById('tournament-search');
+                    if (search) search.focus();
+                }
+            });
+            
+            // Make sure admin-only buttons are hidden initially
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+            
+            // Expose some functions for console debugging (optional)
+            window.efkenya = { db, renderTournaments, launchConfetti };
+            
+            console.log('%c[eFKenya] Web app initialized successfully. Ready for GitHub Pages.', 'color:#64748b');
+        }
+
+        // Boot the app
+        window.onload = initializeApp;
+        
+        // Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registered'));
+  });
+}
+    </script>
+</body>
+</html>
